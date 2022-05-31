@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>教科書をあげる</h1>
+    <div id="container">
+        <input type="text" id="isbn" v-model="isbn" placeholder="isbn">
+        <input type="text" id="bname" v-model="bname"  placeholder="bname">
+        <input type="text" id="bauth" v-model="bauth"  placeholder="bauth">
+        <button id="givebtn" @click="give">give</button>
+    </div>
+    <script type="module">
+        import { firebaseConfig, check, Register, Login, Logout, State } from "/js/functions.js";
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        // console.log(check(firebase));
+        const socket = io();
+        new Vue({
+            el:"#container",
+            data(){
+                return{
+                    isbn:"",
+                    bname:"",
+                    bauth:""
+                }
+            },
+            methods:{
+                give: function(){
+                    firebase.auth().onAuthStateChanged((user=>{
+                        let uid=user.uid
+                        if (uid==sessionStorage.getItem('user')){
+                            socket.emit("bookgive",uid,this.isbn,this.bname,this.bauth);
+                            console.log(uid)
+                        }                       
+                    }))
+                }
+            }
+        })
+    </script>
+</body>
+</html>

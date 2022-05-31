@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <h1>Mypage</h1>
+    <div>point</div>
+    <div id="req">
+        <h2>request</h2>
+        <ul>
+            <li v-for="(req, index) in requests">
+                {{req}}
+                <button @click="cancel" :value="req">取り消す</button>
+            </li>
+        </ul>
+        <h2>交渉中</h2>
+        <ul>
+            <li v-for="(neg, index) in negRequests">
+                {{neg}}
+                <button @click="getComplete" :value="neg">受け取り済み</button>
+                <button @click="toChat" :value="neg">チャットへ</button>
+            </li>
+        </ul>
+        <h2>require</h2>
+        <ul>
+            <li v-for="(req, index) in requires">
+                {{req}}
+                <button @click="approval" :value="req">承認</button>
+                <button @click="reject" :value="req">拒否</button>
+            </li>
+        </ul>
+        <h2>交渉中</h2>
+        <ul>
+            <li v-for="(neg, index) in negRequires">
+                {{neg}}
+                <button @click="giveComplete" :value="neg">渡し済み</button>
+                <button @click="toChat" :value="neg">チャットへ</button>
+            </li>
+        </ul>
+        <h2>チャット</h2>
+        <input type="text" v-model="msg">
+        <button @click="send">送信</button>
+        <ul>
+            <li v-for="(chat, index) in viewChat">
+                {{chat.uid+':'+chat.msg}}
+            </li>
+        </ul>
+    </div>
+    
+    <h2>持っている教科書</h2>
+    <h2>あげた教科書</h2>
+
+    <button onclick="console.log(51642)">hhhh</button>
+    <script type="module">
+        import { firebaseConfig, check, Register, Login, Logout, State, loginCheck} from "/js/functions.js";
+        firebase.initializeApp(firebaseConfig);
+        const socket = io();
+        const db=firebase.firestore();
+        new Vue({
+            el:'#req',
+            data(){
+                return{
+                    requests:[],
+                    requires:[],
+                    negRequests:[],
+                    negRequires:[],
+                    chatHist:{},
+                    chatId:0,
+                    msg:'',
+                    onSnapshot:[],
+                    viewChat:[]
+                }
+            },
+            methods:{
+                cancel: function(e){
+                    const cancelBook = e.target.value;
+                    const uid = sessionStorage.getItem('user');
+                    if (uid){
+                        socket.emit('cancelBook',uid,cancelBook)        
+                    }
+                },
+                reject: function(e){
+                    const rejectBook = e.target.value;
+                    const uid = sessionStorage.getItem('user');
+                    if (loginCheck(firebase)){
+                        socket.emit('rejectBook',uid,rejectBook)        
+                    }
+                },
+                approval:function(e){
+                    const approvalBook = e.target.value;
+                    // const approvalBook = this.requires[e.target.value];
+                    const uid = sessionStorage.getItem('user');
+                    if (loginCheck(firebase)){
+                        socket.emit('approvalBook',uid,approvalBook)                  
+                    }
+                },
+                getComplete:function(e){
+                    const negBook = e.target.value;
+                    const uid = sessionStorage.getItem('user');
+                    if (loginCheck(firebase)){
+                        socket.emit('getCompleteBook',uid,negBook)        
+                    }
+                },
+                giveComplete:function(e){
+                    const negBook = e.target.value;
+                    const uid = sessionStorage.getItem('user');
+                    if (loginCheck(firebase)){
+                        socket.emit('giveCompleteBook',uid,negBook)        
+                    }
+                },
+                toChat:function(e){
+                    const ID = e.target.value;
+                    this.chatId = ID;  
+                    const uid = sessionStorage.getItem('user');
+                    if (loginCheck(firebase) && this.onSnapshot.indexOf(ID)==-1){
+                        this.chatHist[ID]=[];
+                        this.onSnapshot.push(ID)
+                        db.collection("users")
+                        .doc(ID.split(':')[0])
+                        .collection("negRequire")
+                        .doc(ID)
+                        .collection('chat')
+                        .orderBy("time")
+                        .onSnapshot((snapshot)=>{
+                            snapshot.docChanges().forEach((change) => {
+                                this.chatHist[ID].unshift(change.doc.data());
+                                this.viewChat=this.chatHist[ID]
+                            });
+                        })                                                                  
+                    } else if(this.onSnapshot.indexOf(this.chatId)!=-1){
+                        this.viewChat=this.chatHist[this.chatId]
+                        console.log(this.chatHist)
+                    }                
+                },
+                send:function(e){
+                    const uid = sessionStorage.getItem('user');
+                    if (loginCheck(firebase)){
+                        socket.emit('chatMsg', this.msg, this.chatId, uid)
+                        this.msg='';
+                    }
+                }
+            },
+            mounted(){
+               
+                socket.on('resetBookStatus',(uid,requests,requires,negRequests,negRequires)=>{
+                    if (uid==sessionStorage.getItem('user') && loginCheck(firebase)){
+
+                        this.requests=requests;
+                        this.requires=requires;
+                        this.negRequests=negRequests;
+                        this.negRequires=negRequires;
+                        console.log(requests, requires)
+                    }
+                   
+                })
+
+                
+            },
+       
+            created: function(){
+                const requestInit = async (uid)=>{
+                    const requestSnapshot = await db.collection('users').doc(uid).collection('request').get();
+                    this.requests=[];
+                    requestSnapshot.forEach(doc=>{
+                        this.requests.push(doc.id);
+                    })   
+                } 
+                const requireInit = async (uid)=>{
+                    const requireSnapshot = await db.collection('users').doc(uid).collection('require').get();
+                    this.requires=[];
+                    requireSnapshot.forEach(doc=>{
+                        this.requires.push(doc.id);
+                    })   
+                } 
+                const negRequestInit = async (uid)=>{
+                    this.negRequests=[];
+                    const negRequestSnapshot = await db.collection('users').doc(uid).collection('negRequest').get();
+                    negRequestSnapshot.forEach(doc=>{
+                        this.negRequests.push(doc.id);
+                    })  
+                    
+                }             
+                const negRequireInit = async (uid)=>{
+                    this.negRequires=[];
+                    const negRequireSnapshot = await db.collection('users').doc(uid).collection('negRequire').get();
+                    negRequireSnapshot.forEach(doc=>{
+                        this.negRequires.push(doc.id);
+                    })  
+                    
+                }             
+                const uid = sessionStorage.getItem('user');
+                if (loginCheck(firebase)){
+                    requestInit(uid)
+                    requireInit(uid)
+                    negRequestInit(uid)
+                    negRequireInit(uid)
+                }
+            }         
+             
+        })
+    </script>
+</body>
+</html>

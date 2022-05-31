@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to Firebase Hosting</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+  </head>
+  <body>
+    <div id="header">
+      <h1>九大 ShareBooks</h1>
+      <div id="Mypage">Mypage</div>
+    </div>
+
+    <div id="main">
+      <div id="give" onclick="location.href='./give'">
+        give
+      </div>
+      <div id="get" onclick="location.href='./get'">
+        get
+      </div>   
+    </div>
+
+    <div id="message">
+      <div>
+        メールアドレス<input id="mail" type="mail" required/>
+      </div>
+      <div>
+        パスワード<input id="password" type="password" required/>
+      </div>
+        <button id="login">ログイン</button>
+        <button id="register">新規登録</button>
+        <button id="logout">ログアウト</button>
+        <button id="userstate">ユーザー確認</button>
+    </div>
+
+    <script type="module" src="/js/index.js"></script>
+  </body>
+  
+</html>
