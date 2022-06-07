@@ -1,22 +1,22 @@
 html{
-    background-color: rgb(206, 203, 203);
+    background-color: rgb(61, 60, 60);
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 h1{
-    background-color: aqua;
     text-align: center;
     margin-top: 100px;
     font-size: 25px;
     font-weight: normal;
+    color: aliceblue;
 }
 #registerform{
     margin-top: 100px;
 }
 .text{
     text-align: center;
-    /* background-color: aquamarine; */
     margin:  0 auto;
     font-size: 20px;
+    color: aliceblue;
 }
 input{
     text-align: center;
@@ -28,6 +28,7 @@ input{
     max-width: 600px;
     border: none;
     border-radius: 5px;
+    border:  solid 2px #a5a3a3;
 }
 #register{
     display: block;
@@ -38,7 +39,7 @@ input{
     max-width: 600px;
     border: none;
     border-radius: 5px;
-    background-color: aquamarine;
+    background-color:rgb(253, 132, 132);
 }
 #register:hover{
     cursor: pointer;
