@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <link rel="stylesheet" href="/css/Mypage.css">
+    <link rel="stylesheet" href="/css/Mypage-transaction.css">
+    <title>Document</title>
+</head>
+<body>
+    <div id="hoge">
+        <header-tag></header-tag>
+        <Navigation page="mypage"></Navigation>     
+    </div>
+    <div id="Mypage-container">
+        <div class="component" @click="showRequest" v-if="showDetails.show==''">
+            <span class="text">
+                教科書をもらう
+            </span>
+            <span class="icon">
+                <i class="las la-angle-right"></i>
+            </span>
+        </div>
+        <div v-if="showDetails.show=='request'">
+            <div class="Back" @click="Back">
+                <span class="icon">
+                    <i class="las la-angle-left"></i>
+                </span>
+                <span class="text">
+                    戻る
+                </span>
+            </div>
+            <request></request>
+        </div>
+    
+        <div class="component" @click="showRequire" v-if="showDetails.show==''">
+            <span class="text">
+                教科書をあげる
+            </span>
+            <span class="icon">
+                <i class="las la-angle-right"></i>
+            </span>
+        </div>
+        <div v-if="showDetails.show=='require'">
+            <div class="Back" @click="Back">
+                <span class="icon">
+                    <i class="las la-angle-left"></i>
+                </span>
+                <span class="text">
+                    戻る
+                </span>
+            </div>
+            <require></require>
+        </div>
+
+        <div class="component" @click="showBook" v-if="showDetails.show==''">
+            <span class="text">
+                自分の本
+            </span>
+            <span class="icon">
+                <i class="las la-angle-right"></i>
+            </span>
+        </div>
+        <div v-if="showDetails.show=='book'">
+            <div class="Back" @click="Back">
+                <span class="icon">
+                    <i class="las la-angle-left"></i>
+                </span>
+                <span class="text">
+                    戻る
+                </span>
+            </div>
+            <mybook></mybook>
+        </div>
+    </div>
+  
+    <script type="module" src="/../main.js"></script>
+    <script type="module">
+        import { firebaseConfig, check, Register, Login, Logout, State, loginCheck} from "/js/functions.js";
+        firebase.initializeApp(firebaseConfig);
+        
+        const socket = io();
+        const db=firebase.firestore();
+        
+         //コンポーネント
+        const request = {
+            template: 
+            `<div>
+            <div class="under-bar" v-if="chatId==0">
+                <div @click="showreq" :class="{'nowlist': showList.show=='req'}">リクエストした本</div>
+                <div @click="showneg" :class="{'nowlist': showList.show=='neg'}">交渉中</div>
+            </div>
+            <div class="list-container" v-if="chatId==0">
+                <ul v-if="showList.show=='req'">
+                    <li v-for="(req, index) in requests">
+                        {{req[1]+":"+req[2]}}
+                        <button v-on:click="cancel" v-bind:value="req[0]">取り消す</button>
+                    </li>
+                </ul>
+                
+               
+                <ul v-else>
+                    <li class="booklist" v-for="(neg, index) in negRequests">
+                        <span class="bookname">
+                            {{neg[2]+"さん:"+neg[1]}}
+                        </span>
+                        <div class="btn-container">
+                            <button class="getcomplete" v-on:click="getComplete" v-bind:value="neg[0]">
+                      
+                                <i class="las la-user-check"></i>
+                            </button>
+                            <button class="tochat" @click="toChat" :value="neg">
+                                
+                                <i class="las la-comments"></i>
+                            </button>
+                            <button class="cancel">
+                        
+                                <i class="las la-times-circle"></i>
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="chat-container"  v-if="chatId!=0" >
+                <div @click="leaveChat" class="leave-chat">
+                    <span>
+                        <i class="las la-angle-left"></i>
+                    </span>
+                    <span>
+                        {{chatRoomName}}
+                    </span>
+                </div>
+                <ul class="chat-view" ref="chatview">
+                    <li v-for="(chat, index) in viewChat"  class="msg" >
+                        <div :class="[chat.uid==Myuid ? 'I' : 'You']">
+                            <span>{{chat.msg}}</span>
+                        </div>
+                    </li>
+                </ul>
+                <div class='send-form'>
+                    <input type="text" v-model="msg">
+                    <button @click="send">
+                        <i class="las la-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+            </div>`,
+            data(){
+                return{
+                    requests:[],
+                    negRequests:[],
+                    chatHist:{},
+                    chatId:0,
+                    msg:'',
+                    onSnapshot:[],
+                    viewChat:[],
+                    showList:{show:'req'},
+                    chatRoomName:'',
+                    Myuid:''
+                }
+            },
+            methods:{
+                showreq:function(){
+                    this.$set(this.showList,"show","req")
+                },
+                showneg:function(){
+                    this.$set(this.showList,"show","neg")
+                },
+                getComplete:function(e){
+                    const negBook = e.target.value;
+                    const uid = sessionStorage.getItem('user');
+                    if (loginCheck(firebase) && window.confirm("受け取りを完了しましたか?")){
+                        socket.emit('getCompleteBook',uid,negBook)        
+                    }
+                },
+                cancel: function(e){
+                    const cancelBook = e.target.value;
+                    const uid = sessionStorage.getItem('user');
+                    if (uid){
+                        socket.emit('cancelBook',uid,cancelBook)        
+                    }
+                },
+                toChat: async function(e){
+                    this.Myuid=sessionStorage.getItem('user');
+                    console.log( e.target.value)
+                    const ID = e.target.value.split(",")[0];
+                    this.chatId = e.target.value.split(",")[0]; 
+                    this.chatRoomName =  e.target.value.split(",")[2]+"さん:"+e.target.value.split(",")[1];
+                    const uid = sessionStorage.getItem('user');
+                    if (loginCheck(firebase) && this.onSnapshot.indexOf(e.target.value.split(",")[0])==-1){
+                        this.chatHist[ID]=[];
+                        this.viewChat = [];
+                        this.onSnapshot.push(ID);
+                        db.collection("users")
+                        .doc(ID.split(':')[0])
+                        .collection("negRequire")
+                        .doc(ID)
+                        .collection('chat')
+                        .orderBy("time")
+                        .onSnapshot(async(snapshot)=>{
+                            await snapshot.docChanges().forEach((change) => {
+                                this.chatHist[ID].push(change.doc.data());
+                            });
+                            this.$refs.chatview.scrollIntoView(false);
+                            this.viewChat=this.chatHist[ID];
+                            console.log(this.chatHist[ID]);
+                        })   
+                        // console.log(this.chatId)                                                               
+                    } else if(this.onSnapshot.indexOf( e.target.value.split(",")[0])!=-1){
+                        this.viewChat=this.chatHist[this.chatId]
+                        console.log(this.chatId)
+                    }                
+                },
+                send:function(e){
+                    const uid = sessionStorage.getItem('user');
+                    if (loginCheck(firebase) && this.msg!=""){
+                        socket.emit('chatMsg', this.msg, this.chatId, uid)
+                        this.msg='';
+                    }
+                },
+                leaveChat:function(){
+                    this.chatId=0;
+                }
+            },
+      
+           mounted: function(){
+            const requestInit = (uid)=>{
+                
+                db.collection('users')
+                .doc(uid).collection('request')
+                .onSnapshot((snapshot)=>{
+                    snapshot.docChanges().forEach( async (change) => {
+                        let name = "";
+                        let bname = "";
+                        const [ouid,neguid,bid] = change.doc.id.split(':');
+                        await db.collection('users').doc(neguid).get().then((namedoc)=>{
+                            name = namedoc.data().name
+                        });
+                        await db.collection('bookInfo').doc(bid).get().then((bookdoc)=>{
+                            bname = bookdoc.data().bname
+                        });
+                        const cvtRequest = this.requests.map(x=>JSON.stringify(x))
+                        if (cvtRequest.indexOf(JSON.stringify([change.doc.id, bname, name,]))==-1){
+                            this.requests.push([change.doc.id, bname, name,]);
+                        }else{
+                            this.requests.splice(cvtRequest.indexOf(JSON.stringify([change.doc.id, bname, name,])),1)
+                        }
+                        
+                    });
+                });
+            }           
+            const negRequestInit = (uid)=>{
+                db.collection('users')
+                .doc(uid).collection('negRequest')
+                .onSnapshot((snapshot)=>{
+                    snapshot.docChanges().forEach( async (change) => {
+                        let name = "";
+                        let bname = "";
+                        const [ouid,neguid,bid] = change.doc.id.split(':');
+                        
+                        await db.collection('users').doc(neguid).get().then((namedoc)=>{
+                            name = namedoc.data().name;
+                            console.log(name)
+                        });
+                        await db.collection('bookInfo').doc(bid).get().then((bookdoc)=>{
+                            bname = bookdoc.data().bname
+                        });
+
+                        const cvtNegRequest = this.negRequests.map(x=>JSON.stringify(x))
+                        if (cvtNegRequest.indexOf(JSON.stringify([change.doc.id, bname, name,]))==-1){
+                            this.negRequests.push([change.doc.id, bname, name,]);
+                        }else{
+                            this.negRequests.splice(cvtNegRequest.indexOf(JSON.stringify([change.doc.id, bname, name,])),1)
+                        }
+                    });
+                });
+                
+            }            
+                    
+               const uid = sessionStorage.getItem('user');
+               if (loginCheck(firebase)){
+                   requestInit(uid)
+                   negRequestInit(uid)
+               }
+           }  
+        }
+        
+        const require = {
+            template: 
+            `<div>
+            <div class="under-bar" v-if="chatId==0">
+                <div @click="showreq" :class="{'nowlist': showList.show=='req'}">リクエストされた本</div>
+                <div @click="showneg" :class="{'nowlist': showList.show=='neg'}">交渉中</div>
+            </div>
+            <div class="list-container" v-if="chatId==0">
+            <ul v-if="showList.show=='req'">
+                <li v-for="(req, index) in requires">
+                    {{req[2]+"さん:"+req[1]}}
+                    <button @click="approval" :value="req[0]">承認</button>
+                    <button @click="reject" :value="req[0]">拒否</button>
+                </li>
+            </ul>
+            <ul v-else>
+                <li class="booklist" v-for="(neg, index) in negRequires">
+                    <span class="bookname">
+                        {{neg[2]+"さん:"+neg[1]}}
+                    </span>
+                    <div class="btn-container">
+                        <button class="tochat" @click="toChat" :value="neg">
+                            
+                            <i class="las la-comments"  :value="neg"></i>
+                        </button>
+                        <button class="cancel">
+                       
+                            <i class="las la-times-circle"></i>
+                        </button>
+                    </div>
+                </li>
+            </ul>
+            </div>
+            <div class="chat-container"  v-if="chatId!=0" >
+                <div @click="leaveChat" class="leave-chat">
+                    <span>
+                        <i class="las la-angle-left"></i>
+                    </span>
+                    <span>
+                        {{chatRoomName}}
+                    </span>
+                </div>
+                <ul class="chat-view" ref="chatview">
+                    <li v-for="(chat, index) in viewChat"  class="msg" >
+                        <div :class="[chat.uid==Myuid ? 'I' : 'You']">
+                            <span>{{chat.msg}}</span>
+                        </div>
+                    </li>
+                </ul>
+                <div class='send-form'>
+                    <input type="text" v-model="msg">
+                    <button @click="send">
+                        <i class="las la-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+            </div>`,
+            data(){
+                return{
+                    requires:[],
+                    negRequires:[],
+                    chatHist:{},
+                    chatId:0,
+                    msg:'',
+                    onSnapshot:[],
+                    viewChat:[],
+                    showList:{show:'req'},
+                    chatRoomName:'',
+                    Myuid:''
+                    
+                }
+            },
+            methods:{
+                showreq:function(){
+                    this.$set(this.showList,"show","req")
+                },
+                showneg:function(){
+                    this.$set(this.showList,"show","neg")
+                },
+                reject: function(e){
+                    const rejectBook = e.target.value;
+                    const uid = sessionStorage.getItem('user');
+                    if (loginCheck(firebase)){
+                        socket.emit('rejectBook',uid,rejectBook)        
+                    }
+                },
+                approval:function(e){
+                    const approvalBook = e.target.value;
+                    // const approvalBook = this.requires[e.target.value];
+                    const uid = sessionStorage.getItem('user');
+                    if (loginCheck(firebase)){
+                        socket.emit('approvalBook',uid,approvalBook)                  
+                    }
+                },
+                toChat: async function(e){
+                    this.Myuid=sessionStorage.getItem('user');
+                    const ID = e.target.value.split(",")[0];
+                    this.chatId = e.target.value.split(",")[0]; 
+                    this.chatRoomName =  e.target.value.split(",")[2]+"さん:"+e.target.value.split(",")[1];
+                    const uid = sessionStorage.getItem('user');
+                    if (loginCheck(firebase) && this.onSnapshot.indexOf(e.target.value.split(",")[0])==-1){
+                        this.chatHist[ID]=[];
+                        this.viewChat = [];
+                        this.onSnapshot.push(ID);
+                        db.collection("users")
+                        .doc(ID.split(':')[0])
+                        .collection("negRequire")
+                        .doc(ID)
+                        .collection('chat')
+                        .orderBy("time")
+                        .onSnapshot(async(snapshot)=>{
+                            await snapshot.docChanges().forEach((change) => {
+                                this.chatHist[ID].push(change.doc.data());
+                            });
+                            this.$refs.chatview.scrollIntoView(false);
+                            this.viewChat=this.chatHist[ID];
+                            console.log(this.chatHist[ID]);
+                        })   
+                        // console.log(this.chatId)                                                               
+                    } else if(this.onSnapshot.indexOf( e.target.value.split(",")[0])!=-1){
+                        this.viewChat=this.chatHist[this.chatId]
+                        console.log(this.chatId)
+                    }                
+                },
+                send:function(e){
+                    const uid = sessionStorage.getItem('user');
+                    if (loginCheck(firebase) && this.msg!=""){
+                        socket.emit('chatMsg', this.msg, this.chatId, uid)
+                        this.msg='';
+                    }
+                },
+                leaveChat:function(){
+                    this.chatId=0;
+                }
+            },
+            mounted: function(){
+            const requireInit = (uid)=>{
+                
+                db.collection('users')
+                .doc(uid).collection('require')
+                .onSnapshot((snapshot)=>{
+                    snapshot.docChanges().forEach( async (change) => {
+                        let name = "";
+                        let bname = "";
+                        const [ouid,neguid,bid] = change.doc.id.split(':');
+                        await db.collection('users').doc(neguid).get().then((namedoc)=>{
+                            name = namedoc.data().name
+                        });
+                        await db.collection('bookInfo').doc(bid).get().then((bookdoc)=>{
+                            bname = bookdoc.data().bname
+                        });
+                        const cvtRequire = this.requires.map(x=>JSON.stringify(x))
+                        if (cvtRequire.indexOf(JSON.stringify([change.doc.id, bname, name,]))==-1){
+                            this.requires.push([change.doc.id, bname, name]);
+                        }else{
+                            this.requires.splice(cvtRequire.indexOf(JSON.stringify([change.doc.id, bname, name,])),1)
+                        }
+                        
+                    });
+                });
+            }           
+            const negRequireInit = (uid)=>{
+                db.collection('users')
+                .doc(uid).collection('negRequire')
+                .onSnapshot((snapshot)=>{
+                    snapshot.docChanges().forEach( async (change) => {
+                        let name = "";
+                        let bname = "";
+                        const [ouid,neguid,bid] = change.doc.id.split(':');
+                        await db.collection('users').doc(neguid).get().then((namedoc)=>{
+                            name = namedoc.data().name
+                        });
+                        await db.collection('bookInfo').doc(bid).get().then((bookdoc)=>{
+                         
+                            bname = bookdoc.data().bname
+                        });
+                        const cvtNegRequire = this.negRequires.map(x=>JSON.stringify(x))
+                        if (cvtNegRequire.indexOf(JSON.stringify([change.doc.id, bname, name,]))==-1){
+                            this.negRequires.push([change.doc.id, bname, name]);
+                        }else{
+                            this.negRequires.splice(cvtNegRequire.indexOf(JSON.stringify([change.doc.id, bname, name,])),1)
+                        }
+                        console.log(this.negRequires)
+                    });
+                });
+                
+            }             
+            const uid = sessionStorage.getItem('user');
+            if (loginCheck(firebase)){
+                requireInit(uid)
+                negRequireInit(uid)
+            }
+               
+           }  
+        }
+        
+        const MyBook = {
+            template:
+            `<div id="have">
+                <h2>持っている教科書</h2>
+                <ul>
+                    <li v-for="(book) in books">{{book}}</li>
+                </ul>
+            </div>
+            `,
+            data(){
+                return{
+                    books:[]
+                }
+            },
+            mounted(){
+                if (loginCheck(firebase)){
+                    
+                    const uid = sessionStorage.getItem('user');
+                    db.collection('bookInfo')
+                    .where('uid','==',uid)
+                    .onSnapshot((snapshot)=>{
+                        snapshot.docChanges().forEach((change) => {
+                            
+                            if(this.books.indexOf(change.doc.id)==-1){
+                                this.books.unshift(change.doc.id);
+                            }else{
+                                this.books.splice(this.books.indexOf(change.doc.id),1);
+                            }
+                                                          
+                        });
+                       
+                    })  
+                }
+            }
+        }
+
+        new Vue({
+            el:'#Mypage-container',
+            components:{
+                'request':request,
+                'require':require,
+                'mybook':MyBook
+            },
+            data(){
+                return{
+                    showDetails:{show:''}
+                }
+            },
+            methods:{
+                showRequest: function(){
+                    if (this.showDetails.show=="request"){
+                        this.$set(this.showDetails,'show',"");
+                    }else{
+                        this.$set(this.showDetails,'show',"request");
+                    }
+                    console.log(this.showDetails.show)
+                },
+                showRequire: function(){
+                    if (this.showDetails.show=="require"){
+                        this.$set(this.showDetails,'show',"");
+                    }else{
+                        this.$set(this.showDetails,'show',"require");
+                    }
+                },
+                showBook: function(){
+                    if (this.showDetails.show=="book"){
+                        this.$set(this.showDetails,'show',"");
+                    }else{
+                        this.$set(this.showDetails,'show',"book");
+                    }
+                },
+                Back: function(){             
+                    this.$set(this.showDetails,'show',"");
+                },
+            }   
+        })
+    
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <link rel="stylesheet" href="/css/register.css">
+    <title>Document</title>
+</head>
+<body>
+    <h1>登録</h1>
+    <div id="registerform">
+      <div>
+        <div class="text">
+          メールアドレス
+        </div>
+        <input id="mail" type="mail" required/>
+      </div>
+      <div>
+        <div class="text">
+          パスワード
+        </div>
+        <input id="password" type="password" required/>
+      </div>
+      <div>
+        <div class="text">
+          ニックネーム
+        </div>
+        <input id="name" type="name" required/>
+      </div>
+      <button id="register">登録</button>
+    </div>
+      <script type="module">
+        import { firebaseConfig, check, Register, Login, Logout, State, toMypage } from "/js/functions.js";
+        firebase.initializeApp(firebaseConfig);
+        const socket = io();
+        check(firebase);
+        register.addEventListener('click', function(e) {
+            Register(firebase,socket);  
+        });
+
+       
+      </script>
+</body>
+</html>

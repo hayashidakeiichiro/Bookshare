@@ -1,0 +1,107 @@
+body {  font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
+
+[v-cloak]{
+    display: none;
+}
+#searchform h1{
+    display: block;
+    text-align: center;
+    font-size: 20px;
+    font-weight: normal;
+    margin-top: 80px;
+}
+#searchform #bookname{
+    display: block;
+    text-align: center;
+    font-size: 18px;
+    margin: 20px auto;
+    width: 60%;
+    height: 30px;
+    max-width: 600px;
+    border: none;
+    border-bottom:solid 2px #cfcdcd;
+    border-radius: 5px;
+}
+#searchform #searchbtn{
+    display: block;
+    text-align: center;
+    font-size: 18px;
+    margin: 0 auto;
+    width: 60%;
+    height: 40px;
+    max-width: 600px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff7676;
+}
+#searchform button:hover{
+   opacity: 0.7;
+   cursor: pointer;
+}
+/* list */
+ul{
+    list-style: none;
+    display: block;
+}
+
+#searchform #booklist{
+    margin: 0 auto;
+}
+
+#searchform #booklist li{
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    line-height: 40px;
+    font-size: 15px;
+}
+#searchform #booklist li:hover{
+    cursor: pointer;
+}
+#searchform #booklist .icon{
+    position: absolute;
+    right: 30px;
+}
+#searchform #booklist .selected{
+    background-color: rgb(255, 185, 185);
+}
+#searchform #booklist .icon{
+    transition: all 0.1s;
+}
+#searchform #booklist .selected .icon{
+    transform: rotate(90deg);
+}
+#searchform #booklist .userlist{
+    padding: 0;
+    display: none;
+}
+/* selected */
+#searchform #booklist .selected .userlist{
+    display: block;
+}
+#searchform #booklist .selected .userlist li{
+    display: flex;
+}
+#searchform #booklist .userlist .username{
+    padding: 0;
+    display: block;
+    overflow: hidden;
+    width: 60%;
+    font-size: 13px;
+    margin-left: 20px;
+}
+#searchform #booklist .userlist .requestbtn{
+    padding: 0;
+    display: block;
+    width: 30%;
+    margin: 0 5%;
+    font-size: 13px;
+    border: none;
+    border-radius: 5px;
+    background-color: transparent;
+}
+#searchform #booklist .userlist .requestbtn:hover{
+    cursor: pointer;
+    opacity: 0.7;
+}
+

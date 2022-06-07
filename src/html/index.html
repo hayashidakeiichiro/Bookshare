@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to Firebase Hosting</title>
+    <link rel="stylesheet" href="/css/home.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    
+  </head>
+  <body>
+    <div id="hoge">
+      <header-tag></header-tag>
+      <Navigation page="home"></Navigation>     
+    </div>
+    
+    
+    
+    <div id="searchform">
+      <h1>教科書をさがす</h1>
+      <div>
+        <input type="book" id="bookname" placeholder="書名・著者名を入力" v-model="bookname">
+        <button id="searchbtn"@click="search">
+          検索
+        </button>
+      </div>
+      <ul id="booklist">
+        <li v-for="(book, bindex) in books" :value="bindex" @click="select" v-cloak :class="{'selected':book[0]==selectedBookIndex}">
+          <i class="las la-book-open"></i>
+          {{book[1]}}
+          <i class="las la-user-edit"></i>
+          {{book[2]}}
+          <span class="icon">
+            <i class="las la-angle-right"></i>
+          </span>
+          <!-- userlist -->
+          <ul class="userlist" >
+            <li v-for="(user, index) in users[selectedBookIndex]" :value="index"  v-cloak>
+              <span class="username">
+                {{user[1]}}
+              </span>  
+              <button class="requestbtn" @click.stop="requestBook" :value="index">
+                リクエスト
+                <i class="las la-praying-hands"></i>
+              </button>
+            </li>
+          </ul>
+
+        </li>
+      </ul>
+    </div>
+    
+    <script type="module" src="/js/search.js"></script>
+    <script type="module" src="/../main.js"></script>
+  </body>
+  
+  </html>

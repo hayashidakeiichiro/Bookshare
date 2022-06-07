@@ -1,0 +1,43 @@
+body {font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
+#give-form{
+    margin-top: 50px;
+}
+#give-form h1{
+    text-align: center;
+    font-size: 20px;
+    font-weight: normal;
+    margin-top: 80px;
+}
+#give-form .text{
+    text-align: center;
+    font-size: 20px;  
+}
+#give-form input{
+    display: block;
+    text-align: center;
+    margin: 10px auto;
+    width: 60%;
+    max-width: 500px;
+    height: 30px;
+    font-size: 18px;  
+    border: none;
+    border-bottom:solid 2px #cfcdcd;
+    border-radius: 5px;
+}
+#give-form #givebtn{
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+    width: 60%;
+    max-width: 500px;
+    height: 40px;
+    font-size: 18px;  
+    border-radius: 5px;
+    border: none;
+    background-color: #ff9696;
+    margin-top: 50px;
+}
+#give-form #givebtn:hover{
+    cursor: pointer;
+    opacity: 0.7;
+}

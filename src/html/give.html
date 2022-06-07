@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/give.css">
+    <title>Document</title>
+    <script type="module" src="/../main.js"></script>
+</head>
+<body>
+    <div id="hoge">
+        <header-tag></header-tag>
+        <Navigation page="give"></Navigation>     
+    </div>
+    <div id="give-form">
+        <div class="text">ISBN</div>
+        <input type="text" id="isbn" v-model="isbn" >
+        <div class="text">書名</div>
+        <input type="text" id="bname" v-model="bname" >
+        <div class="text">著者名</div>
+        <input type="text" id="bauth" v-model="bauth" >
+        <button id="givebtn" @click="give">教科書をあげる</button>
+    </div>
+    <script type="module">
+        import { firebaseConfig, check, Register, Login, Logout, State, loginCheck} from "/js/functions.js";
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        // console.log(check(firebase));
+        const socket = io();
+        new Vue({
+            el:"#give-form",
+            data(){
+                return{
+                    isbn:"",
+                    bname:"",
+                    bauth:""
+                }
+            },
+            methods:{
+                give: function(){
+                    if(loginCheck(firebase)){
+                        const uid=sessionStorage.getItem('user');
+                        if (this.isbn!="" && this.bname!=""){
+                            socket.emit("bookgive",uid,this.isbn,this.bname,this.bauth);
+                        }else{
+                            alert("ISBNと書名を入力してください")
+                        }
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+</html>
