@@ -1,0 +1,1 @@
+{"version":3,"file":"VCardHeaderText.mjs","names":["createSimpleFunctional","VCardHeaderText"],"sources":["../../../src/components/VCard/VCardHeaderText.ts"],"sourcesContent":["import { createSimpleFunctional } from '@/util'\n\nexport const VCardHeaderText = createSimpleFunctional('v-card-header-text')\n"],"mappings":"SAASA,sB;AAET,OAAO,MAAMC,eAAe,GAAGD,sBAAsB,CAAC,oBAAD,CAA9C"}

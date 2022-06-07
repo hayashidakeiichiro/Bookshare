@@ -1,0 +1,1 @@
+{"version":3,"file":"VCardContent.mjs","names":["createSimpleFunctional","VCardContent"],"sources":["../../../src/components/VCard/VCardContent.ts"],"sourcesContent":["import { createSimpleFunctional } from '@/util'\n\nexport const VCardContent = createSimpleFunctional('v-card-content')\n"],"mappings":"SAASA,sB;AAET,OAAO,MAAMC,YAAY,GAAGD,sBAAsB,CAAC,gBAAD,CAA3C"}
