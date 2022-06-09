@@ -19,6 +19,7 @@
     "ionic": "^5.4.16",
     "ionicons": "^6.0.2",
     "ionicons-npm": "^2.0.1",
+    "quagga": "^0.12.1",
     "roboto-fontface": "*",
     "socket.io": "^4.5.1",
     "vue-ionicons": "^3.0.5",

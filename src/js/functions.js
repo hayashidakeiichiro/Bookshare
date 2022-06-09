@@ -55,18 +55,36 @@ export  function check(firebase){
     }  
     })
 }
-export  async function loginCheck(firebase){
-    let result = false;
-    await firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-        let uid = user.uid;
-        if (sessionStorage.getItem("user")==uid){
-            result = true;
+export async function loginCheck(firebase){
+    let result = await new Promise((resolve)=>{
+        firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            let uid = user.uid;
+            if (sessionStorage.getItem("user")==uid){
+                resolve(true);
+            }else{
+                resolve(false);
             }
+        }else{
+            resolve(false)
         }
     })
-    return result;
+    })
+    return result
 }
+// export async function loginCheck(firebase){
+//     let result = false;
+//     await  firebase.auth().onAuthStateChanged((user) => {
+//     if (user) {
+//         let uid = user.uid;
+//         if (sessionStorage.getItem("user")==uid){
+//             result = true;
+//             console.log(result)
+//             }
+//         }
+//     })
+//     return result
+// }
 
 
 

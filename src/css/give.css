@@ -1,4 +1,9 @@
 body {font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
+
+[v-cloak]{
+    display: none;
+}
+
 #give-form{
     margin-top: 50px;
 }
@@ -40,4 +45,46 @@ body {font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; 
 #give-form #givebtn:hover{
     cursor: pointer;
     opacity: 0.7;
+}
+.book-info{
+    text-align: center;
+}
+
+
+/* バーコードカメラ */
+.view-off{
+    display: none;
+}
+#barcode-wrapper{
+    visibility: hidden; 
+    margin-top: 40px;
+}
+#barcode-wrapper p{
+    text-align: center;
+}
+#barcode-view{
+    display: block;
+    margin: 0 auto;
+
+}
+
+/* exprain */
+#exprain{
+    padding: 40px;
+}
+#exprain img{
+    width: 100%;
+    max-width: 400px;
+}
+
+
+@media (min-width:800px){
+    .main{
+        display: flex;
+    }
+    #give-form{
+        margin-top: 50px;
+        width: 60%;
+    }
+
 }

@@ -3,6 +3,8 @@ body {  font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0
 [v-cloak]{
     display: none;
 }
+
+
 #searchform h1{
     display: block;
     text-align: center;
@@ -103,5 +105,20 @@ ul{
 #searchform #booklist .userlist .requestbtn:hover{
     cursor: pointer;
     opacity: 0.7;
+}
+
+@media (min-width:800px){
+    #searchform{
+        display: flex;
+    }
+    #search-container{
+        width: 50%;
+    }
+    #book-container{
+        width: 50%;
+        margin: 80px 30px 0 0;
+    }
+  
+
 }
 

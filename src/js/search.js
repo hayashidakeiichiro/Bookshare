@@ -1,5 +1,6 @@
 import { firebaseConfig, check, Register, Login, Logout, State, loginCheck } from "/js/functions.js";
 firebase.initializeApp(firebaseConfig);
+
 check(firebase);
 const socket = io();
 const db=firebase.firestore();

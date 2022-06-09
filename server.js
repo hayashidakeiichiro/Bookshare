@@ -36,6 +36,7 @@ io.on("connection",(socket)=>{
     });
 
     socket.on("bookgive", async (uid,isbn,bname,bauth)=>{
+        console.log(bname);
         let usersRef = db.collection('users').doc(uid);
         const bid = Math.random().toString(36).slice(-8);
         const bookSplit = [];
@@ -227,31 +228,8 @@ io.on("connection",(socket)=>{
     
 })
 
-import {XMLHttpRequest} from "xmlhttprequest";
+import {XMLHttpRequest } from "xmlhttprequest";
 server.listen(process.env.PORT || 8080, () => {
     console.log("Success!");
+    
 });
-
-// const requireInit = async (uid,socket)=>{
-//     let requests=[];
-//     const requestSnapshot = await db.collection('users').doc(uid).collection('request').get();
-//     requestSnapshot.forEach(doc=>{
-//         requests.push(doc.id);
-//     })   
-//     let requires=[];
-//     const requireSnapshot = await db.collection('users').doc(uid).collection('require').get();
-//     requireSnapshot.forEach(doc=>{
-//         requires.push(doc.id);
-//     })   
-//     let negRequests=[];
-//     const negRequestSnapshot = await db.collection('users').doc(uid).collection('negRequest').get();
-//     negRequestSnapshot.forEach(doc=>{
-//         negRequests.push(doc.id);
-//     })  
-//     let negRequires=[];
-//     const negRequireSnapshot = await db.collection('users').doc(uid).collection('negRequire').get();
-//     negRequireSnapshot.forEach(doc=>{
-//         negRequires.push(doc.id);
-//     })  
-//     socket.emit("resetBookStatus",uid,requests,requires,negRequests,negRequires);
-// }  
