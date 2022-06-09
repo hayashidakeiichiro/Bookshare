@@ -4,15 +4,33 @@
     <!-- <h1 id="title">九州大学 BookShare</h1> -->
     <img class="logo" :src="'../img/logo_img.png'">
     <div id="login-form">
-      <a href="/register">会員登録</a>
-      <a href="/login">ログイン</a>
+      <a href="/register" v-if="!login">会員登録</a>
+      <a href="/login" v-if="!login">ログイン</a>
+      <span v-if="login">
+          <i class="las la-user-circle" style="font-size:1.5em;"></i>
+          {{name}}さん
+      </span>
+      <span v-if="login">
+          {{point}}P
+      </span>
     </div>
   </div>
 </template>
 
 <script>
   module.exports = {
-   
+    props:{login:{default:false},
+            name:{default:"noname"},
+            point:{default: 20}
+            },
+    data(){
+      return{
+        uid:""
+      }
+    },
+    methods:{
+
+    }
   };
 </script>
 

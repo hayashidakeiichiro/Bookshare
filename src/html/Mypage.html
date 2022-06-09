@@ -16,7 +16,7 @@
 </head>
 <body>
     <div id="hoge">
-        <header-tag></header-tag>
+        <header-tag :login="login" :name="name" :point="point"></header-tag>
         <Navigation page="mypage"></Navigation>     
     </div>
     <div id="Mypage-container">
@@ -83,9 +83,9 @@
 
     
   
-    <script type="module" src="/../main.js"></script>
+    
     <script type="module">
-        import { firebaseConfig, check, Register, Login, Logout, State, loginCheck} from "/js/functions.js";
+        import { firebaseConfig, check, Register, Login, Logout, State, loginCheck, xss} from "/js/functions.js";
         firebase.initializeApp(firebaseConfig);
         
         const socket = io();
@@ -96,8 +96,14 @@
             template: 
             `<div>
             <div class="under-bar" v-if="chatId==0">
-                <div @click="showreq" :class="{'nowlist': showList.show=='req'}">リクエストした本</div>
-                <div @click="showneg" :class="{'nowlist': showList.show=='neg'}">交渉中</div>
+                <div @click="showreq" :class="{'nowlist': showList.show=='req'}">
+                    リクエストした本
+                    <span class="req-counter">{{requests.length}}</span>
+                </div>
+                <div @click="showneg" :class="{'nowlist': showList.show=='neg'}">
+                    交渉中
+                    <span class="req-counter">{{negRequests.length}}</span>
+                </div>
             </div>
             <div class="list-container" v-if="chatId==0">
                 <ul v-if="showList.show=='req'">
@@ -178,9 +184,11 @@
                 getComplete:function(e){
                     const negBook = e.target.value;
                     const uid = sessionStorage.getItem('user');
-                    if (loginCheck(firebase) && window.confirm("受け取りを完了しましたか?")){
-                        socket.emit('getCompleteBook',uid,negBook)        
-                    }
+                    loginCheck(firebase).then(item=>{
+                        if (item && window.confirm("受け取りを完了しましたか?")){
+                            socket.emit('getCompleteBook',uid,negBook)        
+                        }
+                    })
                 },
                 cancel: function(e){
                     const cancelBook = e.target.value;
@@ -196,7 +204,7 @@
                     this.chatId = e.target.value.split(",")[0]; 
                     this.chatRoomName =  e.target.value.split(",")[2]+"さん:"+e.target.value.split(",")[1];
                     const uid = sessionStorage.getItem('user');
-                    if (loginCheck(firebase) && this.onSnapshot.indexOf(e.target.value.split(",")[0])==-1){
+                    if (this.onSnapshot.indexOf(e.target.value.split(",")[0])==-1){
                         this.chatHist[ID]=[];
                         this.viewChat = [];
                         this.onSnapshot.push(ID);
@@ -222,7 +230,8 @@
                 },
                 send:function(e){
                     const uid = sessionStorage.getItem('user');
-                    if (loginCheck(firebase) && this.msg!=""){
+                    if (this.msg!=""){
+                        this.msg=xss(this.msg);
                         socket.emit('chatMsg', this.msg, this.chatId, uid)
                         this.msg='';
                     }
@@ -287,10 +296,12 @@
             }            
                     
                const uid = sessionStorage.getItem('user');
-               if (loginCheck(firebase)){
-                   requestInit(uid)
-                   negRequestInit(uid)
-               }
+               loginCheck(firebase).then(item=>{
+                    if(item){
+                    requestInit(uid)
+                    negRequestInit(uid)
+                    }
+               })
            }  
         }
         
@@ -298,8 +309,14 @@
             template: 
             `<div>
             <div class="under-bar" v-if="chatId==0">
-                <div @click="showreq" :class="{'nowlist': showList.show=='req'}">リクエストされた本</div>
-                <div @click="showneg" :class="{'nowlist': showList.show=='neg'}">交渉中</div>
+                <div @click="showreq" :class="{'nowlist': showList.show=='req'}">
+                    リクエストされた本
+                    <span class="req-counter">{{requires.length}}</span>
+                </div>
+                <div @click="showneg" :class="{'nowlist': showList.show=='neg'}">
+                    交渉中
+                    <span class="req-counter">{{negRequires.length}}</span>
+                </div>
             </div>
             <div class="list-container" v-if="chatId==0">
             <ul v-if="showList.show=='req'">
@@ -376,17 +393,15 @@
                 reject: function(e){
                     const rejectBook = e.target.value;
                     const uid = sessionStorage.getItem('user');
-                    if (loginCheck(firebase)){
-                        socket.emit('rejectBook',uid,rejectBook)        
-                    }
+                    socket.emit('rejectBook',uid,rejectBook)        
+             
                 },
                 approval:function(e){
                     const approvalBook = e.target.value;
                     // const approvalBook = this.requires[e.target.value];
                     const uid = sessionStorage.getItem('user');
-                    if (loginCheck(firebase)){
-                        socket.emit('approvalBook',uid,approvalBook)                  
-                    }
+                    socket.emit('approvalBook',uid,approvalBook)                  
+          
                 },
                 toChat: async function(e){
                     this.Myuid=sessionStorage.getItem('user');
@@ -394,7 +409,7 @@
                     this.chatId = e.target.value.split(",")[0]; 
                     this.chatRoomName =  e.target.value.split(",")[2]+"さん:"+e.target.value.split(",")[1];
                     const uid = sessionStorage.getItem('user');
-                    if (loginCheck(firebase) && this.onSnapshot.indexOf(e.target.value.split(",")[0])==-1){
+                    if (this.onSnapshot.indexOf(e.target.value.split(",")[0])==-1){
                         this.chatHist[ID]=[];
                         this.viewChat = [];
                         this.onSnapshot.push(ID);
@@ -420,7 +435,8 @@
                 },
                 send:function(e){
                     const uid = sessionStorage.getItem('user');
-                    if (loginCheck(firebase) && this.msg!=""){
+                    if (this.msg!=""){
+                        this.msg=xss(this.msg);
                         socket.emit('chatMsg', this.msg, this.chatId, uid)
                         this.msg='';
                     }
@@ -482,10 +498,12 @@
                 
             }             
             const uid = sessionStorage.getItem('user');
-            if (loginCheck(firebase)){
-                requireInit(uid)
-                negRequireInit(uid)
-            }
+            loginCheck(firebase).then(item=>{
+                if(item){
+                    requireInit(uid)
+                    negRequireInit(uid)
+                }
+            })
                
            }  
         }
@@ -505,24 +523,25 @@
                 }
             },
             mounted(){
-                if (loginCheck(firebase)){
-                    
-                    const uid = sessionStorage.getItem('user');
-                    db.collection('bookInfo')
-                    .where('uid','==',uid)
-                    .onSnapshot((snapshot)=>{
-                        snapshot.docChanges().forEach((change) => {
-                            
-                            if(this.books.indexOf(change.doc.id)==-1){
-                                this.books.unshift(change.doc.id);
-                            }else{
-                                this.books.splice(this.books.indexOf(change.doc.id),1);
-                            }
-                                                          
-                        });
-                       
-                    })  
-                }
+                loginCheck(firebase).then(item=>{
+                    if(item){
+                        const uid = sessionStorage.getItem('user');
+                        db.collection('bookInfo')
+                        .where('uid','==',uid)
+                        .onSnapshot((snapshot)=>{
+                            snapshot.docChanges().forEach((change) => {
+                                
+                                if(this.books.indexOf(change.doc.id)==-1){
+                                    this.books.unshift(change.doc.id);
+                                }else{
+                                    this.books.splice(this.books.indexOf(change.doc.id),1);
+                                }
+                                                            
+                            });
+                        
+                        }) 
+                    }
+                })
             }
         }
 
@@ -569,5 +588,6 @@
     
 
     </script>
+    <script type="module" src="/../main.js"></script>
 </body>
 </html>

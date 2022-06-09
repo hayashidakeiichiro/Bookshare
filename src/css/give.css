@@ -65,8 +65,20 @@ body {font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; 
 #barcode-view{
     display: block;
     margin: 0 auto;
-
 }
+#barcode-btn{
+    border: none;
+    border-radius: 5px;
+    height: 30px;
+    background-color: rgb(226, 226, 226);
+}
+#barcode-btn:hover{
+    cursor: pointer;
+}
+#barcode-btn i{
+    font-size: 1.5em;
+}
+
 
 /* exprain */
 #exprain{

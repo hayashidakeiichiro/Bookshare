@@ -72,21 +72,6 @@ export async function loginCheck(firebase){
     })
     return result
 }
-// export async function loginCheck(firebase){
-//     let result = false;
-//     await  firebase.auth().onAuthStateChanged((user) => {
-//     if (user) {
-//         let uid = user.uid;
-//         if (sessionStorage.getItem("user")==uid){
-//             result = true;
-//             console.log(result)
-//             }
-//         }
-//     })
-//     return result
-// }
-
-
 
 export function Register(firebase,socket){
     console.log(43223253)
@@ -115,11 +100,11 @@ export function Login(firebase){
             console.log("ログイン成功");
             location.href="/";
         }else{
-            console.log("ログイン失敗")
+            alert("ログイン失敗")
         }
-    }), err=>{
-        console.log(err);
-    }
+    }).catch( err=>{
+        alert(err.message)
+    })
 }
 
 
@@ -143,3 +128,22 @@ export function State(firebase){
         console.log(err)
     }
 }
+
+export function xss(unsafeText){
+    if(typeof unsafeText !== 'string'){
+      return unsafeText;
+    }
+    return unsafeText.replace(
+      /[&'`"<>]/g, 
+      function(match) {
+        return {
+          '&': '&amp;',
+          "'": '&#x27;',
+          '`': '&#x60;',
+          '"': '&quot;',
+          '<': '&lt;',
+          '>': '&gt;',
+        }[match]
+      }
+    );
+  }

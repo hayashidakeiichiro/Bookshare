@@ -1,4 +1,4 @@
-import { firebaseConfig, check, Register, Login, Logout, State, loginCheck } from "/js/functions.js";
+import { firebaseConfig, check, Register, Login, Logout, State, loginCheck, xss } from "/js/functions.js";
 firebase.initializeApp(firebaseConfig);
 
 check(firebase);
@@ -44,38 +44,42 @@ new Vue({
             const bname = await this.books[e.target.value][1];                  
             const bauth = await this.books[e.target.value][2]; 
             this.selectedBook = [isbn, bname, bauth];
-            if (loginCheck(firebase)){
-                if (Object.keys(this.users).indexOf(isbn)==-1){
-                    const snapshot = await db.collection('books').doc(isbn).collection('users').get();
-                    const users=[];
-                    snapshot.forEach(doc=>{
-                        users.push([doc.id, doc.data().name]);
-                        console.log(doc.id);
-                    })                                                
-                    this.$set(this.users,isbn,users)
+            loginCheck(firebase).then(async (item)=>{
+                if(item){
+                    if (Object.keys(this.users).indexOf(isbn)==-1){
+                        const snapshot = await db.collection('books').doc(isbn).collection('users').get();
+                        const users=[];
+                        snapshot.forEach(doc=>{
+                            users.push([xss(doc.id), xss(doc.data().name)]);
+                            console.log(doc.id);
+                        })                                                
+                        this.$set(this.users,isbn,users)
+                    }else{
+                        console.log(this.users[isbn]);
+                    }
                 }else{
-                    console.log(this.users[isbn]);
+                    alert("ログインしてください")
                 }
-            }else{
-                alert("ログインしてください")
-            }
+            })
         },
         requestBook:function(e){
             console.log(this.users[this.selectedBookIndex][e.target.value][0]);
             const [uid, bid] = this.users[this.selectedBookIndex][e.target.value][0].split(":");
             const Myuid = sessionStorage.getItem('user');
-            if (loginCheck(firebase) && Myuid!=uid){
-                if (this.requestedBook.indexOf(uid+':'+Myuid+':'+bid)==-1){
-                    socket.emit("requestBook",Myuid,uid,bid,this.selectedBook)
-                    // console.log(uid)
+            loginCheck(firebase).then(item=>{
+                if (item && Myuid!=uid){
+                    if (this.requestedBook.indexOf(uid+':'+Myuid+':'+bid)==-1){
+                        socket.emit("requestBook",Myuid,uid,bid,this.selectedBook)
+                        // console.log(uid)
+                    }else{
+                        alert('リクエスト済みの本です')
+                    }
+                }else if(Myuid==uid){
+                    alert('自分の本です')
                 }else{
-                    alert('リクエスト済みの本です')
+                    alert('ログインしてください')
                 }
-            }else if(Myuid==uid){
-                alert('自分の本です')
-            }else{
-                alert('ログインしてください')
-            }
+            })
         }
         
     },
@@ -94,10 +98,6 @@ new Vue({
             if (this.books.length==0){
                 this.books=[["検索結果は0件です","検索結果は0件です"]]
             }
-        }),
-        socket.on('requestedBook',(req)=>{
-            this.requestedBook = req;
-            // alert(req)
         })
         
     },
@@ -106,9 +106,9 @@ new Vue({
             const snapshot = await db.collection('users').doc(Myuid).collection('request').onSnapshot((snapshot)=>{
                 snapshot.docChanges().forEach((change)=>{
                     if (this.requestedBook.indexOf(change.id==-1)){
-                        this.requestedBook.push(change.id);
+                        this.requestedBook.push(xss(change.id));
                     }else{
-                        this.requestedBook.splice(this.requestedBook.indexOf(change.id==-1),1);
+                        this.requestedBook.splice(this.requestedBook.indexOf(xss(change.id)),1);
                     }
                 })
             });

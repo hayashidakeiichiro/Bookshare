@@ -11,12 +11,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/give.css">
     <title>Q-dai Bookshare</title>
-    <script type="module" src="/../main.js"></script>
     <script type="text/javascript" src="https://serratus.github.io/quaggaJS/examples/js/quagga.min.js"></script>
 </head>
 <body>
     <div id="hoge">
-        <header-tag></header-tag>
+        <header-tag :login="login" :name="name" :point="point"></header-tag>
         <Navigation page="give"></Navigation>     
     </div>
     <div class="main">
@@ -28,17 +27,19 @@
         </div>
         <div id="give-form">
             <div class="text">
-                ISBN
-                <button id="barcode-btn" onclick="initBarcodeScaner()">バーコードを読み取る</button>
+                <button id="barcode-btn" onclick="initBarcodeScaner()">
+                    <i class="las la-barcode"></i>
+                    バーコードを読み取る
+                </button>
             </div>
-            <input type="text" id="isbn" maxlength="13" v-model="isbn" >
+            <input type="text" id="isbn" maxlength="13" v-model="isbn" placeholder="ISBNを入力">
             <div class="result" v-if="result.title!='' && result.author!=''" v-cloak>
                 <div class="book-info title">{{result.title}}</div>
                 <div class="book-info author">{{result.author}}</div>
                 <div class="book-info publisherName">{{result.publisherName}}</div>
             </div>
             <div class="book-info" v-else>本が見つかりません</div>
-            <button id="givebtn" @click="give">教科書をあげる</button>
+            <button id="givebtn" @click="give">教科書を出品</button>
             
             
         </div>
@@ -81,7 +82,8 @@
                         const uid=sessionStorage.getItem('user');
                         
                         if (this.isbn!="" ){
-                            socket.emit("bookgive", uid,this.isbn,this.result.title,this.result.author)
+                            socket.emit("bookgive", uid,this.isbn,this.result.title,this.result.author);
+                            alert("出品が完了されました");
                         }else{
                             alert("ISBNと書名を入力してください")
                         }
@@ -134,5 +136,6 @@
             }
         })
     </script>
+    <script type="module" src="/../main.js"></script>
 </body>
 </html>

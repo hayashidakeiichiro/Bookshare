@@ -122,12 +122,7 @@ io.on("connection",(socket)=>{
             isbn:isbn,
             bid:bid
         })
-        // const requestedBook = [];
-        // const requestSnapshot = await db.collection('users').doc(Myuid).collection('request').get();
-        // requestSnapshot.forEach(doc=>{
-        //     requestedBook.push(doc.id);
-        // })    
-        // socket.emit("requestedBook",requestedBook);
+        
         
     })
 

@@ -23,10 +23,21 @@
     z-index: 10;
     background-color: rgb(250, 250, 250);
 }
-#Mypage-container .under-bar div{
+#Mypage-container .under-bar > div{
     width: 50%;
     line-height: 50px;
     transition: all 0.3s;
+}
+#Mypage-container .under-bar .req-counter{
+    position: absolute;
+    background-color: #fb4444;
+    color: #ffffff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    line-height: 30px;
+    top: 10px;
+    margin-left: 5%;
 }
 #Mypage-container .under-bar .nowlist{
     border-top: solid 4px #ff9f9f;
@@ -100,12 +111,12 @@
     width: 100%;
     height: calc(100% - 200px);
     bottom: 0px;
-    background-color: #dedede;
+    background-color: #d3f5fd;
     z-index: 5;
     margin: 0 auto;
 }
 #Mypage-container .chat-container .chat-view{
-    background-color: #dedede;
+    background-color: #d3f5fd;
     margin-bottom: 50px;
     padding-bottom: 40px;
 }
