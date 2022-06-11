@@ -14,9 +14,23 @@
     <script type="text/javascript" src="https://serratus.github.io/quaggaJS/examples/js/quagga.min.js"></script>
 </head>
 <body>
+
+    <!-- ロード画面 -->
+    <link rel="stylesheet" href="/css/load.css">
+    <div id="loading">
+        <div class="spinner">
+            <div class="bounce1"></div>
+            <div class="bounce2"></div>
+            <div class="bounce3"></div>
+        </div>
+    </div>
+    <script src="/js/load.js"></script>
+
+
+
     <div id="hoge">
         <header-tag :login="login" :name="name" :point="point"></header-tag>
-        <Navigation page="give"></Navigation>     
+        <Navigation page="give" :alerton="alerton"></Navigation>     
     </div>
     <div class="main">
         <!-- <button onClick="toggleScan()">スキャン開始/停止</button></div> -->
@@ -115,10 +129,21 @@
                                 vm.$set(vm.result,"publisherName",jsonInfo.Items[0].Item.publisherName );
                                 // socket.emit("bookgive", uid, vm.isbn, jsonInfo.Items[0].Item.title, jsonInfo.Items[0].Item.author);
                             }else{
-                                alert('nodata')
+                                console.log('nodata')
                             }
                         };
                         request.send()
+
+                        // const request2 = new XMLHttpRequest();
+                        // const testurl2 = `https://shopping.yahooapis.jp/ShoppingWebService/V3/itemSearch?appid=dj00aiZpPWtRSXp0S29pYXNZOSZzPWNvbnN1bWVyc2VjcmV0Jng9NzU-&jan_code=${this.isbn}`
+                        
+                        // request2.open('GET', testurl2, true); 
+                        // request2.onload = function() {
+                        //     const jsonInfo = JSON.parse(this.responseText);
+                        //     console.log(jsonInfo.hits[0].name.split('/'))
+                            
+                        // };
+                        // request2.send()
 
                     }else{
                         this.result={title:"",author:"",publisherName:""}

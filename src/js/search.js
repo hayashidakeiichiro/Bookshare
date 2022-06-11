@@ -52,6 +52,7 @@ new Vue({
                         snapshot.forEach(doc=>{
                             users.push([xss(doc.id), xss(doc.data().name)]);
                             console.log(doc.id);
+                            console.log(doc.data().name);
                         })                                                
                         this.$set(this.users,isbn,users)
                     }else{
@@ -70,7 +71,7 @@ new Vue({
                 if (item && Myuid!=uid){
                     if (this.requestedBook.indexOf(uid+':'+Myuid+':'+bid)==-1){
                         socket.emit("requestBook",Myuid,uid,bid,this.selectedBook)
-                        // console.log(uid)
+                        alert("リクエストしました")
                     }else{
                         alert('リクエスト済みの本です')
                     }

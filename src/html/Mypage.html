@@ -15,9 +15,21 @@
     <title>Q-dai Bookshare</title>
 </head>
 <body>
+    <!-- ロード画面 -->
+    <link rel="stylesheet" href="/css/load.css">
+    <div id="loading">
+        <div class="spinner">
+            <div class="bounce1"></div>
+            <div class="bounce2"></div>
+            <div class="bounce3"></div>
+        </div>
+    </div>
+    <script src="/js/load.js"></script>
+
+
     <div id="hoge">
         <header-tag :login="login" :name="name" :point="point"></header-tag>
-        <Navigation page="mypage"></Navigation>     
+        <Navigation page="mypage" :alerton="alerton"></Navigation>     
     </div>
     <div id="Mypage-container">
         <div class="component" @click="showRequest" v-if="showDetails.show==''">
@@ -83,7 +95,6 @@
 
     
   
-    
     <script type="module">
         import { firebaseConfig, check, Register, Login, Logout, State, loginCheck, xss} from "/js/functions.js";
         firebase.initializeApp(firebaseConfig);
@@ -107,9 +118,15 @@
             </div>
             <div class="list-container" v-if="chatId==0">
                 <ul v-if="showList.show=='req'">
-                    <li v-for="(req, index) in requests">
-                        {{req[1]+":"+req[2]}}
-                        <button v-on:click="cancel" v-bind:value="req[0]">取り消す</button>
+                    <li class="booklist" v-for="(req, index) in requests">
+                        <span class="bookname">
+                            {{req[2]+"さん:"+req[1]}}
+                        </span>
+                        <div class="btn-container">
+                            <button class="btn" v-on:click="cancel" v-bind:value="req[0]">
+                                <i class="las la-times-circle"></i>
+                            </button>
+                        </div>
                     </li>
                 </ul>
                 
@@ -120,15 +137,15 @@
                             {{neg[2]+"さん:"+neg[1]}}
                         </span>
                         <div class="btn-container">
-                            <button class="getcomplete" v-on:click="getComplete" v-bind:value="neg[0]">
+                            <button class="btn" v-on:click="getComplete" v-bind:value="neg[0]">
                       
                                 <i class="las la-user-check"></i>
                             </button>
-                            <button class="tochat" @click="toChat" :value="neg">
+                            <button class="btn" @click="toChat" :value="neg">
                                 
                                 <i class="las la-comments"></i>
                             </button>
-                            <button class="cancel">
+                            <button class="btn">
                         
                                 <i class="las la-times-circle"></i>
                             </button>
@@ -147,8 +164,9 @@
                 </div>
                 <ul class="chat-view" ref="chatview">
                     <li v-for="(chat, index) in viewChat"  class="msg" >
-                        <div :class="[chat.uid==Myuid ? 'I' : 'You']">
-                            <span>{{chat.msg}}</span>
+                        <div :class="[chat.uid==Myuid ? 'I' : 'You']">    
+                            <span class="AlreadyRead" v-if="chat.time<readtime[chatId]">既読</span>
+                            <span class="msg-span">{{chat.msg}}</span>
                         </div>
                     </li>
                 </ul>
@@ -165,6 +183,7 @@
                     requests:[],
                     negRequests:[],
                     chatHist:{},
+                    readtime:{},
                     chatId:0,
                     msg:'',
                     onSnapshot:[],
@@ -208,19 +227,40 @@
                         this.chatHist[ID]=[];
                         this.viewChat = [];
                         this.onSnapshot.push(ID);
-                        db.collection("users")
-                        .doc(ID.split(':')[0])
-                        .collection("negRequire")
+                        db.collection("chat")
                         .doc(ID)
-                        .collection('chat')
+                        .collection('msg')
                         .orderBy("time")
                         .onSnapshot(async(snapshot)=>{
+                            socket.emit("chatAlreadyRead",this.chatId,uid)
+                            console.log(this.chatId)
                             await snapshot.docChanges().forEach((change) => {
-                                this.chatHist[ID].push(change.doc.data());
+                                
+                                const pushdata = change.doc.data();
+                                this.chatHist[ID].push(pushdata);
+                                
                             });
+                            if (this.readtime[ID]){
+                                this.readtime[ID]=1
+                            }
                             this.$refs.chatview.scrollIntoView(false);
                             this.viewChat=this.chatHist[ID];
-                            console.log(this.chatHist[ID]);
+                            
+                        })   
+
+                        db.collection("chat")
+                        .doc(ID)
+                        .collection('read')
+                        .onSnapshot(async(snapshot)=>{
+                            if(this.chatId!=0){
+                                await snapshot.docChanges().forEach((change) => {
+                                    const oLastRead=change.doc.data()[this.chatId.split(':')[0]];             
+                                    const negLastRead=change.doc.data()[this.chatId.split(':')[1]];
+                                    this.$set(this.readtime,ID,oLastRead)
+                                    console.log(this.readtime)
+                                })
+                            } 
+                                                  
                         })   
                         // console.log(this.chatId)                                                               
                     } else if(this.onSnapshot.indexOf( e.target.value.split(",")[0])!=-1){
@@ -278,7 +318,6 @@
                         
                         await db.collection('users').doc(neguid).get().then((namedoc)=>{
                             name = namedoc.data().name;
-                            console.log(name)
                         });
                         await db.collection('bookInfo').doc(bid).get().then((bookdoc)=>{
                             bname = bookdoc.data().bname
@@ -320,10 +359,18 @@
             </div>
             <div class="list-container" v-if="chatId==0">
             <ul v-if="showList.show=='req'">
-                <li v-for="(req, index) in requires">
-                    {{req[2]+"さん:"+req[1]}}
-                    <button @click="approval" :value="req[0]">承認</button>
-                    <button @click="reject" :value="req[0]">拒否</button>
+                <li class="booklist" v-for="(req, index) in requires">
+                    <span class="bookname">
+                        {{req[2]+"さん:"+req[1]}}
+                    </span>
+                    <div class="btn-container">
+                        <button class="btn" @click="approval" :value="req[0]">
+                            <i class="las la-check-circle"></i>
+                        </button>
+                        <button class="btn"  @click="reject" :value="req[0]">
+                            <i class="las la-user-times"></i>
+                        </button>
+                    </div>
                 </li>
             </ul>
             <ul v-else>
@@ -332,11 +379,11 @@
                         {{neg[2]+"さん:"+neg[1]}}
                     </span>
                     <div class="btn-container">
-                        <button class="tochat" @click="toChat" :value="neg">
+                        <button class="btn" @click="toChat" :value="neg">
                             
                             <i class="las la-comments"  :value="neg"></i>
                         </button>
-                        <button class="cancel">
+                        <button class="btn" @click="negReject" :value="neg[0]">
                        
                             <i class="las la-times-circle"></i>
                         </button>
@@ -356,7 +403,8 @@
                 <ul class="chat-view" ref="chatview">
                     <li v-for="(chat, index) in viewChat"  class="msg" >
                         <div :class="[chat.uid==Myuid ? 'I' : 'You']">
-                            <span>{{chat.msg}}</span>
+                            <span class="AlreadyRead" v-if="chat.time<readtime[chatId]">既読</span>
+                            <span class="msg-span">{{chat.msg}}</span>
                         </div>
                     </li>
                 </ul>
@@ -373,6 +421,7 @@
                     requires:[],
                     negRequires:[],
                     chatHist:{},
+                    readtime:{},
                     chatId:0,
                     msg:'',
                     onSnapshot:[],
@@ -396,6 +445,12 @@
                     socket.emit('rejectBook',uid,rejectBook)        
              
                 },
+                negReject: function(e){
+                    const rejectBook = e.target.value;
+                    const uid = sessionStorage.getItem('user');
+                    socket.emit('negRejectBook',uid,rejectBook)        
+             
+                },
                 approval:function(e){
                     const approvalBook = e.target.value;
                     // const approvalBook = this.requires[e.target.value];
@@ -413,24 +468,46 @@
                         this.chatHist[ID]=[];
                         this.viewChat = [];
                         this.onSnapshot.push(ID);
-                        db.collection("users")
-                        .doc(ID.split(':')[0])
-                        .collection("negRequire")
+                        db.collection("chat")
                         .doc(ID)
-                        .collection('chat')
+                        .collection('msg')
                         .orderBy("time")
                         .onSnapshot(async(snapshot)=>{
+                            socket.emit("chatAlreadyRead",this.chatId,uid)
+                            console.log(this.chatId)
                             await snapshot.docChanges().forEach((change) => {
-                                this.chatHist[ID].push(change.doc.data());
+                                
+                                const pushdata = change.doc.data();
+                                this.chatHist[ID].push(pushdata);
+                                
+                                this.$refs.chatview.scrollIntoView(false);
                             });
-                            this.$refs.chatview.scrollIntoView(false);
+                            if (this.readtime[ID]){
+                                this.readtime[ID]=1
+                            }
                             this.viewChat=this.chatHist[ID];
-                            console.log(this.chatHist[ID]);
+                            
+                        })   
+
+                        db.collection("chat")
+                        .doc(ID)
+                        .collection('read')
+                        .onSnapshot(async(snapshot)=>{
+                           
+                            if(this.chatId!=0){
+                                await snapshot.docChanges().forEach((change) => {
+                                    const oLastRead=change.doc.data()[this.chatId.split(':')[0]];             
+                                    const negLastRead=change.doc.data()[this.chatId.split(':')[1]];
+                                    this.$set(this.readtime,ID,negLastRead)
+                                    console.log(this.readtime)
+                                })
+                            }                   
                         })   
                         // console.log(this.chatId)                                                               
                     } else if(this.onSnapshot.indexOf( e.target.value.split(",")[0])!=-1){
                         this.viewChat=this.chatHist[this.chatId]
                         console.log(this.chatId)
+                        this.$refs.chatview.scrollIntoView(false);
                     }                
                 },
                 send:function(e){

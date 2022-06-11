@@ -11,13 +11,14 @@
         ホーム        
       </span>
     </li>
-    <li class="list" :class="{'nowpage': page=='news'}" id="news">
+    <li class="list" :class="{'nowpage': page=='alert'}" id="alert" @click="alert">
       <span class="icon">
         <i class="las la-bell"></i>
       </span>
       <span class="text">
         お知らせ     
       </span>
+      <div id='alert-point' v-if="alerton"></div>
     </li>
     <li class="list" :class="{'nowpage': page=='give'}" id="give" @click="give">
       <span class="icon">
@@ -44,7 +45,8 @@
 
   module.exports = {
    props: {
-      page: String
+    page:{ default: "0"},
+    alerton:{default: true}
     },
     methods:{
       home: function(){
@@ -55,6 +57,9 @@
       },
       mypage: function(){
         location.href="/Mypage"
+      },
+      alert: function(){
+        location.href="/alert"
       }
     }
   };
@@ -97,13 +102,13 @@
 }
 #container li:hover .icon{
   position: absolute;
-  /* background: #fc8383; */
-  color:#fc8383;
+  /* background: #006ccb; */
+  color:#006ccb;
   transform: translateY(-5px);
   
 }
 #container li:hover  .text{
-  color:#fc8383;
+  color:#006ccb;
 }
 #container i{
   line-height: 50px;
@@ -115,7 +120,7 @@
   bottom: -16px;
 }
 .nowpage span{
-  color:#fc8383;
+  color:#006ccb;
 }
 .nowpage .text::before{
   content: '';
@@ -130,8 +135,20 @@
   -webkit-transform: translateX(-50%);
   -ms-transform: translateX(-50%);
   transform: translate(-50%); /*位置調整*/
-  background-color: #fc8383; /*下線の色*/
+  background-color: #006ccb; /*下線の色*/
+}
+.list{
+  position: relative;
 }
 
+#alert-point{
+  position: absolute;
+  background-color: #f29191;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  top:0;
+  right:30%;
+}
 
 </style>

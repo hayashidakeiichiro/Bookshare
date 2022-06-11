@@ -29,7 +29,7 @@ io.on("connection",(socket)=>{
         let usersRef = db.collection('users');
         usersRef.doc(uid).set({
             email:mail,
-            point:20,
+            point:200,
             name:name
         });
        
@@ -122,6 +122,10 @@ io.on("connection",(socket)=>{
             isbn:isbn,
             bid:bid
         })
+        db.collection('users').doc(uid).collection('alert').add({
+            msg:`${bname}がリクエストされました`,
+            time: Date.now()       
+        });
         
         
     })
@@ -129,6 +133,13 @@ io.on("connection",(socket)=>{
     socket.on('approvalBook',async (uid,approvalBook)=>{
         const [ouid,neguid,bid] = approvalBook.split(':');
         //同じ本のリクエストを全て削除
+        let bname = "";
+
+        await db.collection('bookInfo').doc(bid)
+        .get().then((doc)=>{
+            bname=doc.data().bname 
+        })
+
         await db.collection('users').doc(uid).collection('require').where('bid','==',bid)
         .get().then(async (snapshot)=>{
             // console.log(snapshot)
@@ -148,17 +159,25 @@ io.on("connection",(socket)=>{
             })
         })
 
-      
+        
+        db.collection('chat').doc(approvalBook).collection('read').doc("readtime").set({
+            [ouid]:0,
+            [neguid]:0
+        });
+        
         db.collection('users').doc(neguid).collection('negRequest').doc(approvalBook).set({
-            isbn:approvalBook
+            isbn:approvalBook,
+            
         });
         db.collection('users').doc(uid).collection('negRequire').doc(approvalBook).set({
             isbn:approvalBook,        
         });
+        db.collection('users').doc(neguid).collection('alert').add({
+            msg:`${bname}が承認されました`,
+            time: Date.now()       
+        });
        
         
-        point(db, neguid, -100);
-        point(db, uid, 100);
 
     })
 
@@ -170,6 +189,11 @@ io.on("connection",(socket)=>{
         let isbn = "";
         let bname = "";
         let bauth = "";
+        let username = "";
+
+        await db.collection("users").doc(neguid).get().then((doc)=>{
+            username=doc.data().name
+        });
         await db.collection('bookInfo').doc(bid).get().then((doc)=>{
             isbn = doc.data().isbn;
             bname = doc.data().bname;
@@ -184,17 +208,26 @@ io.on("connection",(socket)=>{
             days:"xxxx/xx/xx"
         });
         db.collection('users').doc(ouid).collection('books').doc(isbn).collection('bid').doc(bid).delete();
+        db.collection('chat').doc(negBook).delete();
         
         db.collection('books').doc(isbn).collection('users').doc(ouid+':'+bid).delete();
         db.collection('books').doc(isbn).collection('users').doc(neguid+':'+bid).set({
-            days:"xxxx/xx/xx"
+            days:"xxxx/xx/xx",
+            name:username
         });
 
         db.collection('bookInfo').doc(bid).update({
             uid:neguid
         })
 
+        db.collection('users').doc(ouid).collection('alert').add({
+            msg:`${bname}の受け取りが完了しました`,
+            time: Date.now()       
+        });
+
         console.log(negBook);
+        point(db, neguid, -100);
+        point(db, ouid, 75);
     })
   
     socket.on('cancelBook',(uid,cancelBook)=>{
@@ -210,21 +243,53 @@ io.on("connection",(socket)=>{
         db.collection('users').doc(ouid).collection('require').doc(rejectBook).delete();
         console.log(rejectBook)
     })
+    socket.on('negRejectBook',(uid,rejectBook)=>{
+        const [ouid,neguid,bid] = rejectBook.split(':');
+        db.collection('users').doc(neguid).collection('negRequest').doc(rejectBook).delete();
+        db.collection('users').doc(ouid).collection('negRequire').doc(rejectBook).delete();
+        console.log(rejectBook)
+    })
 
     socket.on('chatMsg',(msg, chatId, uid)=>{
-        console.log(chatId);
         const [ouid,neguid,bid] = chatId.split(':');
-        db.collection('users').doc(ouid).collection('negRequire').doc(chatId).collection('chat').add({
+        db.collection('chat').doc(chatId).collection('msg').add({
             uid: uid,
             msg: msg,
             time: Date.now()
         })
     })
+
+
+    socket.on("AlreadyRead",(uid)=>{
+        try{
+            const alertRef = db.collection('users').doc(uid).collection('alert')
+            alertRef.get().then((snapshot)=>{
+                snapshot.forEach((doc)=>{
+                    alertRef.doc(doc.id).delete();
+                    console.log(doc.id)
+                })
+            })
+        }catch{
+
+        }
+    });
+    socket.on("chatAlreadyRead",(chatId,uid)=>{
+        console.log(chatId)
+        if(chatId!=0){
+
+            const [ouid,neguid,bid] = chatId.split(':');
+            db.collection("chat").doc(chatId).collection('read').doc("readtime").update({
+                [uid]:Date.now() 
+            })
+        }
+    })
+        
     
 })
 
-import {XMLHttpRequest } from "xmlhttprequest";
+import { XMLHttpRequest } from "xmlhttprequest";
 server.listen(process.env.PORT || 8080, () => {
     console.log("Success!");
+    
     
 });

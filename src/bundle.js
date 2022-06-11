@@ -10,7 +10,8 @@ const app = createApp({
     return{
       login:false,
       name:'noname',
-      point:-1
+      point:-1,
+      alerton:false
     }
   },
   components: {
@@ -27,6 +28,12 @@ const app = createApp({
         db.collection('users').doc(uid).get().then(doc=>{
           vm.name=doc.data().name;
           vm.point=doc.data().point;
+        })
+        db.collection('users').doc(uid).collection('alert').limit(1).get().then(snapshot=>{
+          snapshot.forEach((doc)=>{
+            vm.alerton = true;
+            }
+          )
         })
       }
     }

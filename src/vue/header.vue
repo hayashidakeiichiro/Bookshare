@@ -1,6 +1,7 @@
 
 <template>
   <div id="header">
+    
     <!-- <h1 id="title">九州大学 BookShare</h1> -->
     <img class="logo" :src="'../img/logo_img.png'">
     <div id="login-form">

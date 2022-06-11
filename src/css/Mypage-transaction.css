@@ -30,18 +30,19 @@
 }
 #Mypage-container .under-bar .req-counter{
     position: absolute;
-    background-color: #fb4444;
+    background-color: #f07272;
     color: #ffffff;
-    width: 30px;
-    height: 30px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    line-height: 30px;
-    top: 10px;
+    line-height: 20px;
+    top: 15px;
     margin-left: 5%;
+    font-size: 12px;
 }
 #Mypage-container .under-bar .nowlist{
-    border-top: solid 4px #ff9f9f;
-    color: #ff9f9f;
+    border-top: solid 4px #3aa3ff;
+    color: #3aa3ff;
 }
 #Mypage-container .under-bar div:hover{
     cursor: pointer;
@@ -66,7 +67,7 @@
     display: flex;
     right: 10px;
 }
-#Mypage-container .getcomplete,.tochat,.cancel{
+#Mypage-container .btn{
     display: block;
     border: none;
     font-size: 15px;
@@ -77,10 +78,7 @@
     background-color: transparent; 
     margin: 0 10px;  
 }
-#Mypage-container .tochat:hover{
-    cursor: pointer;
-}
-#Mypage-container .cancel:hover{
+#Mypage-container .btn:hover{
     cursor: pointer;
 }
 
@@ -139,7 +137,7 @@
     padding: 10px;
     margin: 5px 0;
 }
-#Mypage-container .chat-container .msg span{
+#Mypage-container .chat-container .msg .msg-span{
     display: inline-block;
     font-size: 12px;
     padding: 7px;
@@ -150,11 +148,18 @@
     margin: 0 40px 0 auto;
     width: 40%;
 }
-#Mypage-container .chat-container .I span{
+#Mypage-container .chat-container .I .msg-span{
     background-color: #7afea0;
 }
-#Mypage-container .chat-container .You span{
+#Mypage-container .chat-container .You .msg-span{
     background-color: #ffffff;
+}
+#Mypage-container .chat-container .I .AlreadyRead{
+    background-color: transparent;
+    font-size: 8px;
+}
+#Mypage-container .chat-container .You .AlreadyRead{
+   display: none;
 }
 
 #Mypage-container .chat-container .I::before{

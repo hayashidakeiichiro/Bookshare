@@ -22147,7 +22147,12 @@ exports["default"] = function (sfc, props) {
 
 module.exports = {
   props: {
-    page: String
+    page: {
+      "default": "0"
+    },
+    alerton: {
+      "default": true
+    }
   },
   methods: {
     home: function home() {
@@ -22158,6 +22163,9 @@ module.exports = {
     },
     mypage: function mypage() {
       location.href = "/Mypage";
+    },
+    alert: function alert() {
+      location.href = "/alert";
     }
   }
 };
@@ -22253,7 +22261,10 @@ var _hoisted_6 = /*#__PURE__*/_withScopeId(function () {
   );
 });
 
-var _hoisted_7 = [_hoisted_5, _hoisted_6];
+var _hoisted_7 = {
+  key: 0,
+  id: "alert-point"
+};
 
 var _hoisted_8 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
@@ -22307,17 +22318,20 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* CLASS */
   ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", {
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["list", {
-      'nowpage': _ctx.page == 'news'
+      'nowpage': _ctx.page == 'alert'
     }]),
-    id: "news"
-  }, _hoisted_7, 2
+    id: "alert",
+    onClick: _cache[1] || (_cache[1] = function () {
+      return _ctx.alert && _ctx.alert.apply(_ctx, arguments);
+    })
+  }, [_hoisted_5, _hoisted_6, _ctx.alerton ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 2
   /* CLASS */
   ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", {
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["list", {
       'nowpage': _ctx.page == 'give'
     }]),
     id: "give",
-    onClick: _cache[1] || (_cache[1] = function () {
+    onClick: _cache[2] || (_cache[2] = function () {
       return _ctx.give && _ctx.give.apply(_ctx, arguments);
     })
   }, _hoisted_10, 2
@@ -22327,7 +22341,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       'nowpage': _ctx.page == 'mypage'
     }]),
     id: "mypage",
-    onClick: _cache[2] || (_cache[2] = function () {
+    onClick: _cache[3] || (_cache[3] = function () {
       return _ctx.mypage && _ctx.mypage.apply(_ctx, arguments);
     })
   }, _hoisted_13, 2
@@ -22574,7 +22588,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n#container[data-v-3a31abf6]{\n  display:relative;\n  margin: 0;\n  background-color: rgb(255, 255, 255);\n}\n#container ul[data-v-3a31abf6]{\n  display:flex;\n  list-style: none;\n  padding:0;\n}\n#container li[data-v-3a31abf6]{\n  display:flex;\n  position: relative;\n  width: 25%;\n  flex-direction: column;\n  list-style: none;\n  padding:0;\n  margin: 0 auto ;\n  justify-content: center;\n  align-items: center;\n}\n#container li[data-v-3a31abf6]:hover{\n  cursor: pointer;\n}\n#container .icon[data-v-3a31abf6]{\n  border-radius: 50%;\n  width: 50px;\n  height: 50px;\n  text-align:center;\n  transition: all 0.3s;\n}\n#container li:hover .icon[data-v-3a31abf6]{\n  position: absolute;\n  /* background: #fc8383; */\n  color:#fc8383;\n  transform: translateY(-5px);\n}\n#container li:hover  .text[data-v-3a31abf6]{\n  color:#fc8383;\n}\n#container i[data-v-3a31abf6]{\n  line-height: 50px;\n  font-size: 2em;\n}\n#container .text[data-v-3a31abf6]{\n  position: absolute;\n  bottom: -16px;\n}\n.nowpage span[data-v-3a31abf6]{\n  color:#fc8383;\n}\n.nowpage .text[data-v-3a31abf6]::before{\n  content: '';\n\n  position: absolute;\n  left: 50%;\n  bottom: -5px; /*下線の上下位置調整*/\n  display: inline-block;\n  width: 50px; /*下線の幅*/\n  height: 4px; /*下線の太さ*/\n  -moz-transform: translateX(-50%);\n  -webkit-transform: translateX(-50%);\n  -ms-transform: translateX(-50%);\n  transform: translate(-50%); /*位置調整*/\n  background-color: #fc8383; /*下線の色*/\n}\n\n\n", "",{"version":3,"sources":["webpack://./src/vue/Navigation.vue"],"names":[],"mappings":";AAiEA;EACE,gBAAgB;EAChB,SAAS;EACT,oCAAoC;AACtC;AACA;EACE,YAAY;EACZ,gBAAgB;EAChB,SAAS;AACX;AACA;EACE,YAAY;EACZ,kBAAkB;EAClB,UAAU;EACV,sBAAsB;EACtB,gBAAgB;EAChB,SAAS;EACT,eAAe;EACf,uBAAuB;EACvB,mBAAmB;AACrB;AACA;EACE,eAAe;AACjB;AAEA;EACE,kBAAkB;EAClB,WAAW;EACX,YAAY;EACZ,iBAAiB;EACjB,oBAAoB;AACtB;AACA;EACE,kBAAkB;EAClB,yBAAyB;EACzB,aAAa;EACb,2BAA2B;AAE7B;AACA;EACE,aAAa;AACf;AACA;EACE,iBAAiB;EACjB,cAAc;AAChB;AAEA;EACE,kBAAkB;EAClB,aAAa;AACf;AACA;EACE,aAAa;AACf;AACA;EACE,WAAW;;EAEX,kBAAkB;EAClB,SAAS;EACT,YAAY,EAAE,YAAY;EAC1B,qBAAqB;EACrB,WAAW,EAAE,OAAO;EACpB,WAAW,EAAE,QAAQ;EACrB,gCAAgC;EAChC,mCAAmC;EACnC,+BAA+B;EAC/B,0BAA0B,EAAE,OAAO;EACnC,yBAAyB,EAAE,OAAO;AACpC","sourcesContent":["\n<template>\n<div>\n  <div id=\"container\">\n  <ul>\n    <li class=\"list\" :class=\"{'nowpage': page=='home'}\" id=\"home\" @click=\"home\">\n      <span class=\"icon\">\n        <i class=\"las la-home\"></i>\n      </span>\n      <span class=\"text\">\n        ホーム        \n      </span>\n    </li>\n    <li class=\"list\" :class=\"{'nowpage': page=='news'}\" id=\"news\">\n      <span class=\"icon\">\n        <i class=\"las la-bell\"></i>\n      </span>\n      <span class=\"text\">\n        お知らせ     \n      </span>\n    </li>\n    <li class=\"list\" :class=\"{'nowpage': page=='give'}\" id=\"give\" @click=\"give\">\n      <span class=\"icon\">\n        <i class=\"las la-book\"></i>\n      </span>\n      <span class=\"text\">\n        あげる       \n      </span>\n    </li>\n    <li class=\"list\" :class=\"{'nowpage': page=='mypage'}\" id=\"mypage\" @click=\"mypage\">\n      <span class=\"icon\">\n        <i class=\"las la-user\"></i>\n      </span>\n      <span class=\"text\">\n        マイページ        \n      </span>\n    </li>\n  </ul>\n  </div>\n</div>\n</template>\n\n<script>\n\n  module.exports = {\n   props: {\n      page: String\n    },\n    methods:{\n      home: function(){\n        location.href=\"/\"\n      },\n      give: function(){\n        location.href=\"/give\"\n      },\n      mypage: function(){\n        location.href=\"/Mypage\"\n      }\n    }\n  };\n</script>\n\n<style scoped>\n@import \"https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css\";\n\n#container{\n  display:relative;\n  margin: 0;\n  background-color: rgb(255, 255, 255);\n}\n#container ul{\n  display:flex;\n  list-style: none;\n  padding:0;\n}\n#container li{\n  display:flex;\n  position: relative;\n  width: 25%;\n  flex-direction: column;\n  list-style: none;\n  padding:0;\n  margin: 0 auto ;\n  justify-content: center;\n  align-items: center;\n}\n#container li:hover{\n  cursor: pointer;\n}\n\n#container .icon{\n  border-radius: 50%;\n  width: 50px;\n  height: 50px;\n  text-align:center;\n  transition: all 0.3s;\n}\n#container li:hover .icon{\n  position: absolute;\n  /* background: #fc8383; */\n  color:#fc8383;\n  transform: translateY(-5px);\n  \n}\n#container li:hover  .text{\n  color:#fc8383;\n}\n#container i{\n  line-height: 50px;\n  font-size: 2em;\n}\n\n#container .text{\n  position: absolute;\n  bottom: -16px;\n}\n.nowpage span{\n  color:#fc8383;\n}\n.nowpage .text::before{\n  content: '';\n\n  position: absolute;\n  left: 50%;\n  bottom: -5px; /*下線の上下位置調整*/\n  display: inline-block;\n  width: 50px; /*下線の幅*/\n  height: 4px; /*下線の太さ*/\n  -moz-transform: translateX(-50%);\n  -webkit-transform: translateX(-50%);\n  -ms-transform: translateX(-50%);\n  transform: translate(-50%); /*位置調整*/\n  background-color: #fc8383; /*下線の色*/\n}\n\n\n</style>"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n#container[data-v-3a31abf6]{\n  display:relative;\n  margin: 0;\n  background-color: rgb(255, 255, 255);\n}\n#container ul[data-v-3a31abf6]{\n  display:flex;\n  list-style: none;\n  padding:0;\n}\n#container li[data-v-3a31abf6]{\n  display:flex;\n  position: relative;\n  width: 25%;\n  flex-direction: column;\n  list-style: none;\n  padding:0;\n  margin: 0 auto ;\n  justify-content: center;\n  align-items: center;\n}\n#container li[data-v-3a31abf6]:hover{\n  cursor: pointer;\n}\n#container .icon[data-v-3a31abf6]{\n  border-radius: 50%;\n  width: 50px;\n  height: 50px;\n  text-align:center;\n  transition: all 0.3s;\n}\n#container li:hover .icon[data-v-3a31abf6]{\n  position: absolute;\n  /* background: #006ccb; */\n  color:#006ccb;\n  transform: translateY(-5px);\n}\n#container li:hover  .text[data-v-3a31abf6]{\n  color:#006ccb;\n}\n#container i[data-v-3a31abf6]{\n  line-height: 50px;\n  font-size: 2em;\n}\n#container .text[data-v-3a31abf6]{\n  position: absolute;\n  bottom: -16px;\n}\n.nowpage span[data-v-3a31abf6]{\n  color:#006ccb;\n}\n.nowpage .text[data-v-3a31abf6]::before{\n  content: '';\n\n  position: absolute;\n  left: 50%;\n  bottom: -5px; /*下線の上下位置調整*/\n  display: inline-block;\n  width: 50px; /*下線の幅*/\n  height: 4px; /*下線の太さ*/\n  -moz-transform: translateX(-50%);\n  -webkit-transform: translateX(-50%);\n  -ms-transform: translateX(-50%);\n  transform: translate(-50%); /*位置調整*/\n  background-color: #006ccb; /*下線の色*/\n}\n.list[data-v-3a31abf6]{\n  position: relative;\n}\n#alert-point[data-v-3a31abf6]{\n  position: absolute;\n  background-color: #f29191;\n  width:10px;\n  height:10px;\n  border-radius:50%;\n  top:0;\n  right:30%;\n}\n\n", "",{"version":3,"sources":["webpack://./src/vue/Navigation.vue"],"names":[],"mappings":";AAsEA;EACE,gBAAgB;EAChB,SAAS;EACT,oCAAoC;AACtC;AACA;EACE,YAAY;EACZ,gBAAgB;EAChB,SAAS;AACX;AACA;EACE,YAAY;EACZ,kBAAkB;EAClB,UAAU;EACV,sBAAsB;EACtB,gBAAgB;EAChB,SAAS;EACT,eAAe;EACf,uBAAuB;EACvB,mBAAmB;AACrB;AACA;EACE,eAAe;AACjB;AAEA;EACE,kBAAkB;EAClB,WAAW;EACX,YAAY;EACZ,iBAAiB;EACjB,oBAAoB;AACtB;AACA;EACE,kBAAkB;EAClB,yBAAyB;EACzB,aAAa;EACb,2BAA2B;AAE7B;AACA;EACE,aAAa;AACf;AACA;EACE,iBAAiB;EACjB,cAAc;AAChB;AAEA;EACE,kBAAkB;EAClB,aAAa;AACf;AACA;EACE,aAAa;AACf;AACA;EACE,WAAW;;EAEX,kBAAkB;EAClB,SAAS;EACT,YAAY,EAAE,YAAY;EAC1B,qBAAqB;EACrB,WAAW,EAAE,OAAO;EACpB,WAAW,EAAE,QAAQ;EACrB,gCAAgC;EAChC,mCAAmC;EACnC,+BAA+B;EAC/B,0BAA0B,EAAE,OAAO;EACnC,yBAAyB,EAAE,OAAO;AACpC;AACA;EACE,kBAAkB;AACpB;AAEA;EACE,kBAAkB;EAClB,yBAAyB;EACzB,UAAU;EACV,WAAW;EACX,iBAAiB;EACjB,KAAK;EACL,SAAS;AACX","sourcesContent":["\n<template>\n<div>\n  <div id=\"container\">\n  <ul>\n    <li class=\"list\" :class=\"{'nowpage': page=='home'}\" id=\"home\" @click=\"home\">\n      <span class=\"icon\">\n        <i class=\"las la-home\"></i>\n      </span>\n      <span class=\"text\">\n        ホーム        \n      </span>\n    </li>\n    <li class=\"list\" :class=\"{'nowpage': page=='alert'}\" id=\"alert\" @click=\"alert\">\n      <span class=\"icon\">\n        <i class=\"las la-bell\"></i>\n      </span>\n      <span class=\"text\">\n        お知らせ     \n      </span>\n      <div id='alert-point' v-if=\"alerton\"></div>\n    </li>\n    <li class=\"list\" :class=\"{'nowpage': page=='give'}\" id=\"give\" @click=\"give\">\n      <span class=\"icon\">\n        <i class=\"las la-book\"></i>\n      </span>\n      <span class=\"text\">\n        あげる       \n      </span>\n    </li>\n    <li class=\"list\" :class=\"{'nowpage': page=='mypage'}\" id=\"mypage\" @click=\"mypage\">\n      <span class=\"icon\">\n        <i class=\"las la-user\"></i>\n      </span>\n      <span class=\"text\">\n        マイページ        \n      </span>\n    </li>\n  </ul>\n  </div>\n</div>\n</template>\n\n<script>\n\n  module.exports = {\n   props: {\n    page:{ default: \"0\"},\n    alerton:{default: true}\n    },\n    methods:{\n      home: function(){\n        location.href=\"/\"\n      },\n      give: function(){\n        location.href=\"/give\"\n      },\n      mypage: function(){\n        location.href=\"/Mypage\"\n      },\n      alert: function(){\n        location.href=\"/alert\"\n      }\n    }\n  };\n</script>\n\n<style scoped>\n@import \"https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css\";\n\n#container{\n  display:relative;\n  margin: 0;\n  background-color: rgb(255, 255, 255);\n}\n#container ul{\n  display:flex;\n  list-style: none;\n  padding:0;\n}\n#container li{\n  display:flex;\n  position: relative;\n  width: 25%;\n  flex-direction: column;\n  list-style: none;\n  padding:0;\n  margin: 0 auto ;\n  justify-content: center;\n  align-items: center;\n}\n#container li:hover{\n  cursor: pointer;\n}\n\n#container .icon{\n  border-radius: 50%;\n  width: 50px;\n  height: 50px;\n  text-align:center;\n  transition: all 0.3s;\n}\n#container li:hover .icon{\n  position: absolute;\n  /* background: #006ccb; */\n  color:#006ccb;\n  transform: translateY(-5px);\n  \n}\n#container li:hover  .text{\n  color:#006ccb;\n}\n#container i{\n  line-height: 50px;\n  font-size: 2em;\n}\n\n#container .text{\n  position: absolute;\n  bottom: -16px;\n}\n.nowpage span{\n  color:#006ccb;\n}\n.nowpage .text::before{\n  content: '';\n\n  position: absolute;\n  left: 50%;\n  bottom: -5px; /*下線の上下位置調整*/\n  display: inline-block;\n  width: 50px; /*下線の幅*/\n  height: 4px; /*下線の太さ*/\n  -moz-transform: translateX(-50%);\n  -webkit-transform: translateX(-50%);\n  -ms-transform: translateX(-50%);\n  transform: translate(-50%); /*位置調整*/\n  background-color: #006ccb; /*下線の色*/\n}\n.list{\n  position: relative;\n}\n\n#alert-point{\n  position: absolute;\n  background-color: #f29191;\n  width:10px;\n  height:10px;\n  border-radius:50%;\n  top:0;\n  right:30%;\n}\n\n</style>"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -22602,7 +22616,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n#header[data-v-69cff8cf]{\n  display: flex;\n  /* background: #ff8484; */\n  height: 60px;\n  margin: 0;\n  padding-top: 8px;\n}\n#header h1[data-v-69cff8cf]{\n  font-size: 25px;\n  right: 0;\n  height: 40px;\n  margin:0;\n}\n#header .logo[data-v-69cff8cf]{\n  width: 40%;\n  max-width: 250px;\n  aspect-ratio: 3.5/1;\n}\n#login-form[data-v-69cff8cf]{\n  width: 160px;\n  margin: auto 0 20px auto;\n  height: 20px;\n}\n#login-form a[data-v-69cff8cf]{\n  text-decoration: none;\n  margin-left: 10px;\n  color:#000000;\n  border: none;\n  border-radius: 3px;\n}\n#login-form a[data-v-69cff8cf]:hover{\n  opacity:0.7;\n}\n\n\n", "",{"version":3,"sources":["webpack://./src/vue/header.vue"],"names":[],"mappings":";AAsCA;EACE,aAAa;EACb,yBAAyB;EACzB,YAAY;EACZ,SAAS;EACT,gBAAgB;AAClB;AACA;EACE,eAAe;EACf,QAAQ;EACR,YAAY;EACZ,QAAQ;AACV;AACA;EACE,UAAU;EACV,gBAAgB;EAChB,mBAAmB;AACrB;AACA;EACE,YAAY;EACZ,wBAAwB;EACxB,YAAY;AAEd;AACA;EACE,qBAAqB;EACrB,iBAAiB;EACjB,aAAa;EACb,YAAY;EACZ,kBAAkB;AACpB;AACA;EACE,WAAW;AACb","sourcesContent":["\n<template>\n  <div id=\"header\">\n    <!-- <h1 id=\"title\">九州大学 BookShare</h1> -->\n    <img class=\"logo\" :src=\"'../img/logo_img.png'\">\n    <div id=\"login-form\">\n      <a href=\"/register\" v-if=\"!login\">会員登録</a>\n      <a href=\"/login\" v-if=\"!login\">ログイン</a>\n      <span v-if=\"login\">\n          <i class=\"las la-user-circle\" style=\"font-size:1.5em;\"></i>\n          {{name}}さん\n      </span>\n      <span v-if=\"login\">\n          {{point}}P\n      </span>\n    </div>\n  </div>\n</template>\n\n<script>\n  module.exports = {\n    props:{login:{default:false},\n            name:{default:\"noname\"},\n            point:{default: 20}\n            },\n    data(){\n      return{\n        uid:\"\"\n      }\n    },\n    methods:{\n\n    }\n  };\n</script>\n\n<style scoped>\n@import \"https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css\";\n#header{\n  display: flex;\n  /* background: #ff8484; */\n  height: 60px;\n  margin: 0;\n  padding-top: 8px;\n}\n#header h1{\n  font-size: 25px;\n  right: 0;\n  height: 40px;\n  margin:0;\n}\n#header .logo{\n  width: 40%;\n  max-width: 250px;\n  aspect-ratio: 3.5/1;\n}\n#login-form{\n  width: 160px;\n  margin: auto 0 20px auto;\n  height: 20px;\n  \n}\n#login-form a{\n  text-decoration: none;\n  margin-left: 10px;\n  color:#000000;\n  border: none;\n  border-radius: 3px;\n}\n#login-form a:hover{\n  opacity:0.7;\n}\n\n\n</style>"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n#header[data-v-69cff8cf]{\n  display: flex;\n  /* background: #ff8484; */\n  height: 60px;\n  margin: 0;\n  padding-top: 8px;\n}\n#header h1[data-v-69cff8cf]{\n  font-size: 25px;\n  right: 0;\n  height: 40px;\n  margin:0;\n}\n#header .logo[data-v-69cff8cf]{\n  width: 40%;\n  max-width: 250px;\n  aspect-ratio: 3.5/1;\n}\n#login-form[data-v-69cff8cf]{\n  width: 160px;\n  margin: auto 0 20px auto;\n  height: 20px;\n}\n#login-form a[data-v-69cff8cf]{\n  text-decoration: none;\n  margin-left: 10px;\n  color:#000000;\n  border: none;\n  border-radius: 3px;\n}\n#login-form a[data-v-69cff8cf]:hover{\n  opacity:0.7;\n}\n\n\n", "",{"version":3,"sources":["webpack://./src/vue/header.vue"],"names":[],"mappings":";AAuCA;EACE,aAAa;EACb,yBAAyB;EACzB,YAAY;EACZ,SAAS;EACT,gBAAgB;AAClB;AACA;EACE,eAAe;EACf,QAAQ;EACR,YAAY;EACZ,QAAQ;AACV;AACA;EACE,UAAU;EACV,gBAAgB;EAChB,mBAAmB;AACrB;AACA;EACE,YAAY;EACZ,wBAAwB;EACxB,YAAY;AAEd;AACA;EACE,qBAAqB;EACrB,iBAAiB;EACjB,aAAa;EACb,YAAY;EACZ,kBAAkB;AACpB;AACA;EACE,WAAW;AACb","sourcesContent":["\n<template>\n  <div id=\"header\">\n    \n    <!-- <h1 id=\"title\">九州大学 BookShare</h1> -->\n    <img class=\"logo\" :src=\"'../img/logo_img.png'\">\n    <div id=\"login-form\">\n      <a href=\"/register\" v-if=\"!login\">会員登録</a>\n      <a href=\"/login\" v-if=\"!login\">ログイン</a>\n      <span v-if=\"login\">\n          <i class=\"las la-user-circle\" style=\"font-size:1.5em;\"></i>\n          {{name}}さん\n      </span>\n      <span v-if=\"login\">\n          {{point}}P\n      </span>\n    </div>\n  </div>\n</template>\n\n<script>\n  module.exports = {\n    props:{login:{default:false},\n            name:{default:\"noname\"},\n            point:{default: 20}\n            },\n    data(){\n      return{\n        uid:\"\"\n      }\n    },\n    methods:{\n\n    }\n  };\n</script>\n\n<style scoped>\n@import \"https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css\";\n#header{\n  display: flex;\n  /* background: #ff8484; */\n  height: 60px;\n  margin: 0;\n  padding-top: 8px;\n}\n#header h1{\n  font-size: 25px;\n  right: 0;\n  height: 40px;\n  margin:0;\n}\n#header .logo{\n  width: 40%;\n  max-width: 250px;\n  aspect-ratio: 3.5/1;\n}\n#login-form{\n  width: 160px;\n  margin: auto 0 20px auto;\n  height: 20px;\n  \n}\n#login-form a{\n  text-decoration: none;\n  margin-left: 10px;\n  color:#000000;\n  border: none;\n  border-radius: 3px;\n}\n#login-form a:hover{\n  opacity:0.7;\n}\n\n\n</style>"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -23388,7 +23402,8 @@ var app = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)({
     return {
       login: false,
       name: 'noname',
-      point: -1
+      point: -1,
+      alerton: false
     };
   },
   components: {
@@ -23421,6 +23436,11 @@ var app = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)({
                   db.collection('users').doc(uid).get().then(function (doc) {
                     vm.name = doc.data().name;
                     vm.point = doc.data().point;
+                  });
+                  db.collection('users').doc(uid).collection('alert').limit(1).get().then(function (snapshot) {
+                    snapshot.forEach(function (doc) {
+                      vm.alerton = true;
+                    });
                   });
                 }
 
