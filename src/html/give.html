@@ -32,13 +32,13 @@
         <header-tag :login="login" :name="name" :point="point"></header-tag>
         <Navigation page="give" :alerton="alerton"></Navigation>     
     </div>
-    <div class="main">
+    <div id="barcode-wrapper" class="view-off">
+        <p id="message">カメラ初期化中です</p>
+        <canvas id="barcode-view"></canvas>
+    </div>
+    <div id="main">
         <!-- <button onClick="toggleScan()">スキャン開始/停止</button></div> -->
         
-        <div id="barcode-wrapper" class="view-off">
-            <p id="message">カメラ初期化中です</p>
-            <canvas id="barcode-view"></canvas>
-        </div>
         <div id="give-form">
             <div class="text">
                 <button id="barcode-btn" onclick="initBarcodeScaner()">
@@ -46,24 +46,54 @@
                     バーコードを読み取る
                 </button>
             </div>
-            <input type="text" id="isbn" maxlength="13" v-model="isbn" placeholder="ISBNを入力">
-            <div class="result" v-if="result.title!='' && result.author!=''" v-cloak>
-                <div class="book-info title">{{result.title}}</div>
-                <div class="book-info author">{{result.author}}</div>
-                <div class="book-info publisherName">{{result.publisherName}}</div>
+            <input type="text" id="isbn" maxlength="13" v-model="isbn" placeholder="ISBNを入力">   
+            <div id="noBookData">
+                <h4 v-if="(isbn.length!=13 && isbn.length!=10)">
+                    13桁又は10桁のISBNから自動入力されます
+                </h4>
+                <h4 v-if="(isbn.length==13 || isbn.length==10)&&(result.title=='' || result.author=='')">
+                    すみません、本が見つかりません。タイトルと著者を入力してください。
+                </h4>
+                <input type="text"  placeholder="タイトルを入力" v-model="result.title">   
+                <input type="text"  placeholder="著者を入力" v-model="result.author">   
             </div>
-            <div class="book-info" v-else>本が見つかりません</div>
-            <button id="givebtn" @click="give">教科書を出品</button>
-            
-            
         </div>
-        <div id="exprain">
+        <div id="exprain" class="listing" v-if="result.title=='' || result.author==''">
             <h3>ISBNとは</h3>
             <p> 
                 ISBNは、978で始まる13桁又は10桁の書籍固有の番号です。</br>
                 書籍カバーの後側の上部に、ISBNが明記されています。
             </p>
             <img src="/img/ISBN1.png" alt="">
+        </div>
+        <div class="listing" v-else>
+            <div class="result"  v-cloak>
+                <div class="book-info title">
+                    <i class="las la-book-open"></i>
+                    {{result.title}}
+                </div>
+                <div class="book-info author">
+                    <i class="las la-user-edit"></i>
+                    {{result.author}}
+                </div>
+                <div class="book-info publisherName">
+                    <i class="las la-building"></i>
+                    {{result.publisherName}}
+                </div>
+            </div>
+            <h5>受け渡し場所</h5>
+            <select name="" id="" v-model="region">
+                <option label="伊都キャンパス" value="伊都キャンパス" selected></option>
+                <option label="馬出キャンパス" value="馬出キャンパス"></option>
+                <option label="大橋キャンパス" value="大橋キャンパス"></option>
+                <option label="筑紫キャンパス" value="筑紫キャンパス"></option>
+                <option label="その他" value="その他"></option>
+            </select>
+            <div>
+                <h5>コメント(受け渡し場所・時間・その他の希望の詳細)</h5>
+                <textarea name="" id="" cols="30" rows="5" v-model="detail"></textarea>       
+            </div>
+            <button id="givebtn" @click="give">出品する</button>
         </div>
     </div>
         <!-- <div class="text">書名</div>
@@ -80,13 +110,15 @@
         // console.log(check(firebase));
         const socket = io();
         new Vue({
-            el:"#give-form",
+            el:"#main",
             data(){
                 return{
-                    isbn:"",
+                    isbn:"978462760512",
                     bname:"",
                     bauth:"",
-                    result:{title:"",author:"",publisherName:""}
+                    result:{title:"",author:"",publisherName:""},
+                    detail:"",
+                    region:"伊都キャンパス"
                 }
             },
             methods:{
@@ -96,7 +128,7 @@
                         const uid=sessionStorage.getItem('user');
                         
                         if (this.isbn!="" ){
-                            socket.emit("bookgive", uid,this.isbn,this.result.title,this.result.author);
+                            socket.emit("bookgive", uid,this.isbn,this.result.title,this.result.author,this.region,this.detail);
                             alert("出品が完了されました");
                         }else{
                             alert("ISBNと書名を入力してください")

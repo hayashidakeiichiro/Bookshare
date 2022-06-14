@@ -9,7 +9,7 @@
       <a href="/login" v-if="!login">ログイン</a>
       <span v-if="login">
           <i class="las la-user-circle" style="font-size:1.5em;"></i>
-          {{name}}さん
+          {{name}}
       </span>
       <span v-if="login">
           {{point}}P
@@ -59,6 +59,7 @@
   width: 160px;
   margin: auto 0 20px auto;
   height: 20px;
+  text-align: right;
   
 }
 #login-form a{
@@ -68,6 +69,10 @@
   border: none;
   border-radius: 3px;
 }
+#login-form span{
+  margin-right: 10px;
+}
+
 #login-form a:hover{
   opacity:0.7;
 }

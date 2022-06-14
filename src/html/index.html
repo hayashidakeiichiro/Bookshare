@@ -42,7 +42,7 @@
         </button>
       </div>
       <div id="book-container">
-        <ul id="booklist">
+        <ul id="booklist" v-if="!modal">
           <li v-for="(book, bindex) in books" :value="bindex" @click="select" v-cloak :class="{'selected':book[0]==selectedBookIndex}">
             <i class="las la-book-open"></i>
             {{book[1]}}
@@ -53,19 +53,45 @@
             </span>
             <!-- userlist -->
             <ul class="userlist" >
-              <li v-for="(user, index) in users[selectedBookIndex]" :value="index"  v-cloak>
+              <li v-for="(user, index) in users[selectedBookIndex]" :value="index"  v-cloak @click.stop="modalOn(user,book[1],book[2])">
                 <span class="username">
                   {{user[1]}}
+                 
                 </span>  
-                <button class="requestbtn" @click.stop="requestBook" :value="index">
-                  リクエスト
-                  <i class="las la-praying-hands"></i>
-                </button>
+                  
               </li>
             </ul>
   
           </li>
         </ul>
+        <div id="modal" v-else>
+          <button @click="modalOff" class="backbtn">
+            <i class="las la-angle-left"></i>
+            戻る
+          </button>
+          <div class="modal-info">
+            <div class="book-info title">
+              <i class="las la-book-open"></i>    
+              {{modalInfo["title"]}}
+          </div>
+          <div class="book-info author">
+              <i class="las la-user-edit"></i>
+              {{modalInfo["author"]}}       
+          </div>   
+          <span class="name">
+            {{modalInfo["e"][1]}}
+          </span>
+          
+          <h4>受け渡し場所</h4>
+          {{modalInfo["e"][2]}}
+          <h4>コメント</h4>
+          {{modalInfo["e"][3]}}
+          </div>
+          <button class="requestbtn" @click.stop="requestBook" >
+            リクエスト
+            <i class="las la-praying-hands"></i>
+          </button>
+        </div>
       </div>
     </div>
     

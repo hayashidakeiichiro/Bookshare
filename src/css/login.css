@@ -1,5 +1,5 @@
 html{
-    background-color: rgb(61, 60, 60);
+    background-color: rgb(40, 40, 40);
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 h1{
@@ -35,11 +35,12 @@ input{
     margin: 20px auto;
     width: 90%;
     height: 40px;
-    font-size: 17px;
+    font-size: 19px;
     max-width: 600px;
     border: none;
     border-radius: 5px;
-    background-color:rgb(253, 132, 132);
+    background-color:#3b67f6;
+    color: aliceblue;
 }
 #login:hover{
     cursor: pointer;

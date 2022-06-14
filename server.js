@@ -35,8 +35,8 @@ io.on("connection",(socket)=>{
        
     });
 
-    socket.on("bookgive", async (uid,isbn,bname,bauth)=>{
-        console.log(bname);
+    socket.on("bookgive", async (uid, isbn, bname, bauth, region, detail)=>{
+       
         let usersRef = db.collection('users').doc(uid);
         const bid = Math.random().toString(36).slice(-8);
         const bookSplit = [];
@@ -57,7 +57,8 @@ io.on("connection",(socket)=>{
         let booksRef = db.collection('books').doc(isbn);
         await booksRef.set({
             bname:bname,
-            bauth:bauth
+            bauth:bauth,
+            
         })
 
         await db.collection('bookInfo').doc(bid).set({
@@ -69,7 +70,10 @@ io.on("connection",(socket)=>{
         })
         await booksRef.collection('users').doc(uid+':'+bid).set({
             days:'xxxx/xx/xx',
-            name:username
+            name:username,
+            region:region,
+            detail:detail,
+            request:false
         });
 
         //json 書き込み
@@ -103,7 +107,6 @@ io.on("connection",(socket)=>{
             if(a.value['counter'] > b.value['counter']) return -1;
             return 0;
           });
-        console.log(arr);
         socket.emit("bookInfo",arr);
             
     });
@@ -112,76 +115,120 @@ io.on("connection",(socket)=>{
         const isbn = selectedBook[0];
         const bname = selectedBook[1];
         const bauth = selectedBook[2];
-        //リクエスト相手のデータベース書き込み
-        db.collection('users').doc(uid).collection('require').doc(uid+':'+Myuid+':'+bid).set({
-            isbn:isbn,
-            bid:bid
+        let requested=false;
+        await db.collection('books').doc(isbn).collection('users').doc(uid+':'+bid).get().then(doc=>{
+            requested = doc.data().request;
         })
-        //リクエストした人のデータベース書き込み
-        db.collection('users').doc(Myuid).collection('request').doc(uid+':'+Myuid+':'+bid).set({
-            isbn:isbn,
-            bid:bid
-        })
-        db.collection('users').doc(uid).collection('alert').add({
-            msg:`${bname}がリクエストされました`,
-            time: Date.now()       
-        });
-        
+        if(requested){
+            socket.emit("requested")
+        }else{
+            point(db, Myuid, -100).then((item)=>{
+                if(item){
+                    //リクエスト相手のデータベース書き込み
+                    db.collection('users').doc(uid).collection('negRequire').doc(uid+':'+Myuid+':'+bid).set({
+                        isbn:isbn,
+                        bid:bid
+                    })
+                    //リクエストした人のデータベース書き込み
+                    db.collection('users').doc(Myuid).collection('negRequest').doc(uid+':'+Myuid+':'+bid).set({
+                        isbn:isbn,
+                        bid:bid
+                    })
+                    db.collection('users').doc(uid).collection('alert').add({
+                        msg:`${bname}がリクエストされました`,
+                        time: Date.now()       
+                    });
+                    db.collection('books').doc(isbn).collection('users').doc(uid+':'+bid).update({
+                        request:true      
+                    });
+                    db.collection('chat').doc(uid+':'+Myuid+':'+bid).collection('read').doc("readtime").set({
+                        [uid]:0,
+                        [Myuid]:0
+                    });
+                    socket.emit("successPoint")
+                }else{
+                    socket.emit("failedPoint")
+                }
+            })
+
+        }
         
     })
+    // socket.on('requestBook',async (Myuid,uid,bid,selectedBook)=>{
+    //     const isbn = selectedBook[0];
+    //     const bname = selectedBook[1];
+    //     const bauth = selectedBook[2];
+    //     //リクエスト相手のデータベース書き込み
+    //     db.collection('users').doc(uid).collection('require').doc(uid+':'+Myuid+':'+bid).set({
+    //         isbn:isbn,
+    //         bid:bid
+    //     })
+    //     //リクエストした人のデータベース書き込み
+    //     db.collection('users').doc(Myuid).collection('request').doc(uid+':'+Myuid+':'+bid).set({
+    //         isbn:isbn,
+    //         bid:bid
+    //     })
+    //     db.collection('users').doc(uid).collection('alert').add({
+    //         msg:`${bname}がリクエストされました`,
+    //         time: Date.now()       
+    //     });
+        
+        
+    // })
 
-    socket.on('approvalBook',async (uid,approvalBook)=>{
-        const [ouid,neguid,bid] = approvalBook.split(':');
-        //同じ本のリクエストを全て削除
-        let bname = "";
+    // socket.on('approvalBook',async (uid,approvalBook)=>{
+    //     const [ouid,neguid,bid] = approvalBook.split(':');
+    //     //同じ本のリクエストを全て削除
+    //     let bname = "";
 
-        await db.collection('bookInfo').doc(bid)
-        .get().then((doc)=>{
-            bname=doc.data().bname 
-        })
+    //     await db.collection('bookInfo').doc(bid)
+    //     .get().then((doc)=>{
+    //         bname=doc.data().bname 
+    //     })
 
-        await db.collection('users').doc(uid).collection('require').where('bid','==',bid)
-        .get().then(async (snapshot)=>{
-            // console.log(snapshot)
-            snapshot.forEach((doc)=>{
-                console.log(doc.id)
-                const [delOuid, delNuid, bid]=doc.id.split(':');
-                db.collection('users').doc(delNuid).collection('request').doc(doc.id).delete();
+    //     await db.collection('users').doc(uid).collection('require').where('bid','==',bid)
+    //     .get().then(async (snapshot)=>{
+    //         // console.log(snapshot)
+    //         snapshot.forEach((doc)=>{
+    //             console.log(doc.id)
+    //             const [delOuid, delNuid, bid]=doc.id.split(':');
+    //             db.collection('users').doc(delNuid).collection('request').doc(doc.id).delete();
                 
-            })
-        })
-        await db.collection('users').doc(uid).collection('require').where('bid','==',bid)
-        .get().then(async (snapshot)=>{
-            // console.log(snapshot)
-            snapshot.forEach((doc)=>{
-                db.collection('users').doc(uid).collection('require').doc(doc.id).delete();
+    //         })
+    //     })
+    //     await db.collection('users').doc(uid).collection('require').where('bid','==',bid)
+    //     .get().then(async (snapshot)=>{
+    //         // console.log(snapshot)
+    //         snapshot.forEach((doc)=>{
+    //             db.collection('users').doc(uid).collection('require').doc(doc.id).delete();
                 
-            })
-        })
+    //         })
+    //     })
 
         
-        db.collection('chat').doc(approvalBook).collection('read').doc("readtime").set({
-            [ouid]:0,
-            [neguid]:0
-        });
+    //     db.collection('chat').doc(approvalBook).collection('read').doc("readtime").set({
+    //         [ouid]:0,
+    //         [neguid]:0
+    //     });
         
-        db.collection('users').doc(neguid).collection('negRequest').doc(approvalBook).set({
-            isbn:approvalBook,
+    //     db.collection('users').doc(neguid).collection('negRequest').doc(approvalBook).set({
+    //         isbn:approvalBook,
             
-        });
-        db.collection('users').doc(uid).collection('negRequire').doc(approvalBook).set({
-            isbn:approvalBook,        
-        });
-        db.collection('users').doc(neguid).collection('alert').add({
-            msg:`${bname}が承認されました`,
-            time: Date.now()       
-        });
+    //     });
+    //     db.collection('users').doc(uid).collection('negRequire').doc(approvalBook).set({
+    //         isbn:approvalBook,        
+    //     });
+    //     db.collection('users').doc(neguid).collection('alert').add({
+    //         msg:`${bname}が承認されました`,
+    //         time: Date.now()       
+    //     });
        
         
 
-    })
+    // })
 
     socket.on('getCompleteBook', async (uid,negBook)=>{
+        console.log(negBook)
         const [ouid,neguid,bid] = negBook.split(':');
         db.collection('users').doc(neguid).collection('negRequest').doc(negBook).delete();
         db.collection('users').doc(ouid).collection('negRequire').doc(negBook).delete();
@@ -221,12 +268,10 @@ io.on("connection",(socket)=>{
         })
 
         db.collection('users').doc(ouid).collection('alert').add({
-            msg:`${bname}の受け取りが完了しました`,
+            msg:`${bname}の受け取りが完了されました`,
             time: Date.now()       
         });
 
-        console.log(negBook);
-        point(db, neguid, -100);
         point(db, ouid, 75);
     })
   
@@ -241,13 +286,11 @@ io.on("connection",(socket)=>{
         const [ouid,neguid,bid] = rejectBook.split(':');
         db.collection('users').doc(neguid).collection('request').doc(rejectBook).delete();
         db.collection('users').doc(ouid).collection('require').doc(rejectBook).delete();
-        console.log(rejectBook)
     })
     socket.on('negRejectBook',(uid,rejectBook)=>{
         const [ouid,neguid,bid] = rejectBook.split(':');
         db.collection('users').doc(neguid).collection('negRequest').doc(rejectBook).delete();
         db.collection('users').doc(ouid).collection('negRequire').doc(rejectBook).delete();
-        console.log(rejectBook)
     })
 
     socket.on('chatMsg',(msg, chatId, uid)=>{
@@ -266,7 +309,6 @@ io.on("connection",(socket)=>{
             alertRef.get().then((snapshot)=>{
                 snapshot.forEach((doc)=>{
                     alertRef.doc(doc.id).delete();
-                    console.log(doc.id)
                 })
             })
         }catch{
@@ -274,7 +316,7 @@ io.on("connection",(socket)=>{
         }
     });
     socket.on("chatAlreadyRead",(chatId,uid)=>{
-        console.log(chatId)
+        console.log(uid+"読んだ")
         if(chatId!=0){
 
             const [ouid,neguid,bid] = chatId.split(':');

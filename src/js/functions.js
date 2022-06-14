@@ -8,18 +8,26 @@ export const firebaseConfig = {
 };
 
 export async function point (db, uid, point){
-    let pre_point = 0;
     const pointRef= db.collection('users').doc(uid);
-    await pointRef.get().then((doc)=>{
-        pre_point = doc.data().point;
+   
+    let result = await new Promise((resolve)=>{
+        pointRef.get().then((doc) => {
+            if (doc) {
+                let pre_point = doc.data().point;
+                if (pre_point+point>=0){
+                    pointRef.update({
+                        point:pre_point+point
+                    })
+                    resolve(true);
+                }else{
+                    resolve(false);
+                }
+            }else{
+                resolve(false)
+            }
+        })
     })
-    // if (pre_point+point>=0){
-
-    // }
-    await pointRef.update({
-        point: pre_point+point
-    })
-    console.log(pre_point);
+    return result
 }
 
 export  function toMypage(firebase){

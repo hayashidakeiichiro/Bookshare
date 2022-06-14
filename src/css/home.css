@@ -4,6 +4,9 @@ body {  font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0
     display: none;
 }
 
+/* #searchform{
+    position: relative;
+} */
 
 #searchform h1{
     display: block;
@@ -93,20 +96,53 @@ ul{
     font-size: 13px;
     margin-left: 20px;
 }
-#searchform #booklist .userlist .requestbtn{
+.requestbtn{
     padding: 0;
     display: block;
-    width: 30%;
-    margin: 0 5%;
-    font-size: 13px;
+    width: 60%;
+    height: 30px;
+    margin: 0 auto;
+    font-size: 15px;
     border: none;
     border-radius: 5px;
-    background-color: transparent;
+    background-color: #3aa3ff;
 }
-#searchform #booklist .userlist .requestbtn:hover{
+.requestbtn:hover{
     cursor: pointer;
     opacity: 0.7;
 }
+
+
+/* modal */
+
+.book-info{
+    position: relative;
+    text-align: center;
+    height: 30px;
+    border-bottom:#b0b0b0 solid 1px;
+    width: 80%;
+    margin: 20px auto;
+}
+.book-info .las{
+    position: absolute;
+    left: 10px;
+    font-size: 1.5em;
+}
+
+#modal .backbtn{
+    border: none;
+    background-color: transparent;
+    width: 100%;
+    height: 30px;
+    font-size: 14px;
+    text-align: left;
+}
+#modal{
+    width: 100%;
+    height: 100%;
+    background-color: rgb(255, 255, 255);
+}
+
 
 @media (min-width:800px){
     #searchform{
@@ -119,7 +155,10 @@ ul{
         width: 50%;
         margin: 80px 30px 0 0;
     }
-  
+
+
 
 }
+
+
 

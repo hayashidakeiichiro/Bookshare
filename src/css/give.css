@@ -29,7 +29,7 @@ body {font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; 
     border-bottom:solid 2px #cfcdcd;
     border-radius: 5px;
 }
-#give-form #givebtn{
+#givebtn{
     display: block;
     text-align: center;
     margin: 0 auto;
@@ -42,11 +42,26 @@ body {font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; 
     background-color: #3aa3ff;
     margin-top: 50px;
 }
-#give-form #givebtn:hover{
+#givebtn:hover{
     cursor: pointer;
     opacity: 0.7;
 }
 .book-info{
+    position: relative;
+    text-align: center;
+    height: 30px;
+    border-bottom:#929292 solid 2px;
+    width: 80%;
+    margin: 20px auto;
+}
+.book-info .las{
+    position: absolute;
+    left: 10px;
+    font-size: 1.5em;
+}
+
+
+#noBookData h4{
     text-align: center;
 }
 
@@ -56,8 +71,8 @@ body {font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; 
     display: none;
 }
 #barcode-wrapper{
-    visibility: hidden; 
     margin-top: 40px;
+    visibility: hidden; 
 }
 #barcode-wrapper p{
     text-align: center;
@@ -83,20 +98,41 @@ body {font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; 
 /* exprain */
 #exprain{
     padding: 40px;
+    
 }
 #exprain img{
     width: 100%;
     max-width: 400px;
 }
 
+/* listing */
+.listing{
+    
+    padding: 30px;
+}
+.listing textarea{
+    width: 70%;
+    font-size: 15px;
+}
+
 
 @media (min-width:800px){
-    .main{
+    #main{
         display: flex;
+    }
+    #barcode-wrapper{
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        margin: 20px;
     }
     #give-form{
         margin-top: 50px;
-        width: 60%;
+        width: 50%;      
+    }
+    .listing{
+        margin-top: 50px;
+        width: 50%;
     }
 
 }

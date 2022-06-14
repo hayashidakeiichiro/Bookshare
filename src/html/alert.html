@@ -63,7 +63,8 @@
                     if (item){
                         db.collection('users').doc(uid).collection('alert').get().then((snapshot)=>{
                             snapshot.forEach((doc)=>{
-                                vm.alertList.push(doc.data().msg)
+                                // vm.alertList.push(doc.data().msg)
+                                vm.alertList.push(Date(doc.data().time))
                             })
                         })
                     }

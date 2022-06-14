@@ -9,13 +9,15 @@ new Vue({
     el:"#searchform",
     data(){
         return{
-            bookname:"",
+            bookname:"材料",
             authorname:"",
             books:[],
             selectedBook:[],
             users:{},
             requestedBook:[],
-            selectedBookIndex:''
+            selectedBookIndex:'',
+            modal:false,
+            modalInfo:{e:0}
         }
     },
     methods:{
@@ -50,9 +52,12 @@ new Vue({
                         const snapshot = await db.collection('books').doc(isbn).collection('users').get();
                         const users=[];
                         snapshot.forEach(doc=>{
-                            users.push([xss(doc.id), xss(doc.data().name)]);
-                            console.log(doc.id);
-                            console.log(doc.data().name);
+                            if (doc.data().request){
+
+                            }else{
+                                users.push([xss(doc.id), xss(doc.data().name), xss(doc.data().region), xss(doc.data().detail)]);
+                            }
+                           
                         })                                                
                         this.$set(this.users,isbn,users)
                     }else{
@@ -64,14 +69,15 @@ new Vue({
             })
         },
         requestBook:function(e){
-            console.log(this.users[this.selectedBookIndex][e.target.value][0]);
-            const [uid, bid] = this.users[this.selectedBookIndex][e.target.value][0].split(":");
+            // const [uid, bid] = this.users[this.selectedBookIndex][e.target.value][0].split(":");
+            const [uid, bid] = this.modalInfo.e[0].split(":");
             const Myuid = sessionStorage.getItem('user');
             loginCheck(firebase).then(item=>{
                 if (item && Myuid!=uid){
+                    
                     if (this.requestedBook.indexOf(uid+':'+Myuid+':'+bid)==-1){
                         socket.emit("requestBook",Myuid,uid,bid,this.selectedBook)
-                        alert("リクエストしました")
+                       
                     }else{
                         alert('リクエスト済みの本です')
                     }
@@ -81,6 +87,15 @@ new Vue({
                     alert('ログインしてください')
                 }
             })
+        },
+        modalOn:function(item, title, author){
+            this.modal=true;
+            this.modalInfo["e"]=item;
+            this.modalInfo["title"]=title;
+            this.modalInfo["author"]=author;
+        },
+        modalOff:function(){
+            this.modal=false
         }
         
     },
@@ -100,24 +115,34 @@ new Vue({
                 this.books=[["検索結果は0件です","検索結果は0件です"]]
             }
         })
-        
+        socket.on("failedPoint",()=>{
+            alert("ポイントが足りません。")
+        })
+        socket.on("successPoint",()=>{
+            alert("リクエストを送りました。")
+        })       
+        socket.on("requested",()=>{
+            alert("すみません、他の人にリクエストされた本です。")
+        })       
     },
-    created : function(){
-        const requestInit = async (Myuid)=>{
-            const snapshot = await db.collection('users').doc(Myuid).collection('request').onSnapshot((snapshot)=>{
+    created(){
+        
+        async  function init(Myuid,list){
+
+            await db.collection('users').doc(Myuid).collection('negRequest').onSnapshot((snapshot)=>{
                 snapshot.docChanges().forEach((change)=>{
-                    if (this.requestedBook.indexOf(change.id==-1)){
-                        this.requestedBook.push(xss(change.id));
+                    if (list.indexOf(change.doc.id==-1)){
+                        list.push(xss(change.doc.id));
                     }else{
-                        this.requestedBook.splice(this.requestedBook.indexOf(xss(change.id)),1);
+                        list.splice(list.indexOf(xss(change.doc.id)),1);
                     }
                 })
             });
-            
-        };
+        }
+
+
         if (sessionStorage.getItem('user')){
-            const Myuid = sessionStorage.getItem('user');
-            requestInit(Myuid);
+            init(sessionStorage.getItem('user'),this.requestedBook)
         }
     }
 })

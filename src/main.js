@@ -22409,7 +22409,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     src: '../img/logo_img.png'
   }, null, 8
   /* PROPS */
-  , _hoisted_2), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [!_ctx.login ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", _hoisted_4, "会員登録")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), !_ctx.login ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", _hoisted_5, "ログイン")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _ctx.login ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_6, [_hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.name) + "さん ", 1
+  , _hoisted_2), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [!_ctx.login ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", _hoisted_4, "会員登録")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), !_ctx.login ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", _hoisted_5, "ログイン")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _ctx.login ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_6, [_hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.name), 1
   /* TEXT */
   )])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _ctx.login ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.point) + "P ", 1
   /* TEXT */
@@ -22616,7 +22616,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n#header[data-v-69cff8cf]{\n  display: flex;\n  /* background: #ff8484; */\n  height: 60px;\n  margin: 0;\n  padding-top: 8px;\n}\n#header h1[data-v-69cff8cf]{\n  font-size: 25px;\n  right: 0;\n  height: 40px;\n  margin:0;\n}\n#header .logo[data-v-69cff8cf]{\n  width: 40%;\n  max-width: 250px;\n  aspect-ratio: 3.5/1;\n}\n#login-form[data-v-69cff8cf]{\n  width: 160px;\n  margin: auto 0 20px auto;\n  height: 20px;\n}\n#login-form a[data-v-69cff8cf]{\n  text-decoration: none;\n  margin-left: 10px;\n  color:#000000;\n  border: none;\n  border-radius: 3px;\n}\n#login-form a[data-v-69cff8cf]:hover{\n  opacity:0.7;\n}\n\n\n", "",{"version":3,"sources":["webpack://./src/vue/header.vue"],"names":[],"mappings":";AAuCA;EACE,aAAa;EACb,yBAAyB;EACzB,YAAY;EACZ,SAAS;EACT,gBAAgB;AAClB;AACA;EACE,eAAe;EACf,QAAQ;EACR,YAAY;EACZ,QAAQ;AACV;AACA;EACE,UAAU;EACV,gBAAgB;EAChB,mBAAmB;AACrB;AACA;EACE,YAAY;EACZ,wBAAwB;EACxB,YAAY;AAEd;AACA;EACE,qBAAqB;EACrB,iBAAiB;EACjB,aAAa;EACb,YAAY;EACZ,kBAAkB;AACpB;AACA;EACE,WAAW;AACb","sourcesContent":["\n<template>\n  <div id=\"header\">\n    \n    <!-- <h1 id=\"title\">九州大学 BookShare</h1> -->\n    <img class=\"logo\" :src=\"'../img/logo_img.png'\">\n    <div id=\"login-form\">\n      <a href=\"/register\" v-if=\"!login\">会員登録</a>\n      <a href=\"/login\" v-if=\"!login\">ログイン</a>\n      <span v-if=\"login\">\n          <i class=\"las la-user-circle\" style=\"font-size:1.5em;\"></i>\n          {{name}}さん\n      </span>\n      <span v-if=\"login\">\n          {{point}}P\n      </span>\n    </div>\n  </div>\n</template>\n\n<script>\n  module.exports = {\n    props:{login:{default:false},\n            name:{default:\"noname\"},\n            point:{default: 20}\n            },\n    data(){\n      return{\n        uid:\"\"\n      }\n    },\n    methods:{\n\n    }\n  };\n</script>\n\n<style scoped>\n@import \"https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css\";\n#header{\n  display: flex;\n  /* background: #ff8484; */\n  height: 60px;\n  margin: 0;\n  padding-top: 8px;\n}\n#header h1{\n  font-size: 25px;\n  right: 0;\n  height: 40px;\n  margin:0;\n}\n#header .logo{\n  width: 40%;\n  max-width: 250px;\n  aspect-ratio: 3.5/1;\n}\n#login-form{\n  width: 160px;\n  margin: auto 0 20px auto;\n  height: 20px;\n  \n}\n#login-form a{\n  text-decoration: none;\n  margin-left: 10px;\n  color:#000000;\n  border: none;\n  border-radius: 3px;\n}\n#login-form a:hover{\n  opacity:0.7;\n}\n\n\n</style>"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n#header[data-v-69cff8cf]{\n  display: flex;\n  /* background: #ff8484; */\n  height: 60px;\n  margin: 0;\n  padding-top: 8px;\n}\n#header h1[data-v-69cff8cf]{\n  font-size: 25px;\n  right: 0;\n  height: 40px;\n  margin:0;\n}\n#header .logo[data-v-69cff8cf]{\n  width: 40%;\n  max-width: 250px;\n  aspect-ratio: 3.5/1;\n}\n#login-form[data-v-69cff8cf]{\n  width: 160px;\n  margin: auto 0 20px auto;\n  height: 20px;\n  text-align: right;\n}\n#login-form a[data-v-69cff8cf]{\n  text-decoration: none;\n  margin-left: 10px;\n  color:#000000;\n  border: none;\n  border-radius: 3px;\n}\n#login-form span[data-v-69cff8cf]{\n  margin-right: 10px;\n}\n#login-form a[data-v-69cff8cf]:hover{\n  opacity:0.7;\n}\n\n\n", "",{"version":3,"sources":["webpack://./src/vue/header.vue"],"names":[],"mappings":";AAuCA;EACE,aAAa;EACb,yBAAyB;EACzB,YAAY;EACZ,SAAS;EACT,gBAAgB;AAClB;AACA;EACE,eAAe;EACf,QAAQ;EACR,YAAY;EACZ,QAAQ;AACV;AACA;EACE,UAAU;EACV,gBAAgB;EAChB,mBAAmB;AACrB;AACA;EACE,YAAY;EACZ,wBAAwB;EACxB,YAAY;EACZ,iBAAiB;AAEnB;AACA;EACE,qBAAqB;EACrB,iBAAiB;EACjB,aAAa;EACb,YAAY;EACZ,kBAAkB;AACpB;AACA;EACE,kBAAkB;AACpB;AAEA;EACE,WAAW;AACb","sourcesContent":["\n<template>\n  <div id=\"header\">\n    \n    <!-- <h1 id=\"title\">九州大学 BookShare</h1> -->\n    <img class=\"logo\" :src=\"'../img/logo_img.png'\">\n    <div id=\"login-form\">\n      <a href=\"/register\" v-if=\"!login\">会員登録</a>\n      <a href=\"/login\" v-if=\"!login\">ログイン</a>\n      <span v-if=\"login\">\n          <i class=\"las la-user-circle\" style=\"font-size:1.5em;\"></i>\n          {{name}}\n      </span>\n      <span v-if=\"login\">\n          {{point}}P\n      </span>\n    </div>\n  </div>\n</template>\n\n<script>\n  module.exports = {\n    props:{login:{default:false},\n            name:{default:\"noname\"},\n            point:{default: 20}\n            },\n    data(){\n      return{\n        uid:\"\"\n      }\n    },\n    methods:{\n\n    }\n  };\n</script>\n\n<style scoped>\n@import \"https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css\";\n#header{\n  display: flex;\n  /* background: #ff8484; */\n  height: 60px;\n  margin: 0;\n  padding-top: 8px;\n}\n#header h1{\n  font-size: 25px;\n  right: 0;\n  height: 40px;\n  margin:0;\n}\n#header .logo{\n  width: 40%;\n  max-width: 250px;\n  aspect-ratio: 3.5/1;\n}\n#login-form{\n  width: 160px;\n  margin: auto 0 20px auto;\n  height: 20px;\n  text-align: right;\n  \n}\n#login-form a{\n  text-decoration: none;\n  margin-left: 10px;\n  color:#000000;\n  border: none;\n  border-radius: 3px;\n}\n#login-form span{\n  margin-right: 10px;\n}\n\n#login-form a:hover{\n  opacity:0.7;\n}\n\n\n</style>"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -23119,28 +23119,37 @@ function point(_x, _x2, _x3) {
 
 function _point() {
   _point = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(db, uid, point) {
-    var pre_point, pointRef;
+    var pointRef, result;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            pre_point = 0;
             pointRef = db.collection('users').doc(uid);
-            _context.next = 4;
-            return pointRef.get().then(function (doc) {
-              pre_point = doc.data().point;
+            _context.next = 3;
+            return new Promise(function (resolve) {
+              pointRef.get().then(function (doc) {
+                if (doc) {
+                  var pre_point = doc.data().point;
+
+                  if (pre_point + point >= 0) {
+                    pointRef.update({
+                      point: pre_point + point
+                    });
+                    resolve(true);
+                  } else {
+                    resolve(false);
+                  }
+                } else {
+                  resolve(false);
+                }
+              });
             });
 
-          case 4:
-            _context.next = 6;
-            return pointRef.update({
-              point: pre_point + point
-            });
+          case 3:
+            result = _context.sent;
+            return _context.abrupt("return", result);
 
-          case 6:
-            console.log(pre_point);
-
-          case 7:
+          case 5:
           case "end":
             return _context.stop();
         }
