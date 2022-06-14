@@ -9,7 +9,7 @@ new Vue({
     el:"#searchform",
     data(){
         return{
-            bookname:"材料",
+            bookname:"",
             authorname:"",
             books:[],
             selectedBook:[],
