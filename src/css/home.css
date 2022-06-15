@@ -51,6 +51,7 @@ ul{
 
 #searchform #booklist{
     margin: 0 auto;
+    padding-right: 30px;
 }
 
 #searchform #booklist li{
@@ -65,7 +66,8 @@ ul{
 }
 #searchform #booklist .icon{
     position: absolute;
-    right: 30px;
+    right: 0px;
+    background-color: #ffffff;
 }
 #searchform #booklist .selected .userlist >li{
     /* background-color: rgb(255, 185, 185); */

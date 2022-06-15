@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/css/Mypage.css">
     <link rel="stylesheet" href="/css/Mypage-transaction.css">
     <title>Q-dai Bookshare</title>
+    <link rel="shortcut icon" href="/img/logo_img.png">
 </head>
 <body>
     <!-- ロード画面 -->
@@ -243,7 +244,7 @@
                     this.Myuid=sessionStorage.getItem('user');
                     const ID = item[0];
                     this.chatId = item[0]; 
-                    this.chatRoomName =  item[1]+"さん:"+item[2];
+                    this.chatRoomName =  item[1]+":"+item[2];
                     
                     const uid = sessionStorage.getItem('user');
                     if (this.onSnapshot.indexOf(ID)==-1){
@@ -505,7 +506,7 @@
                     this.Myuid=sessionStorage.getItem('user');
                     const ID = item[0];
                     this.chatId = item[0]; 
-                    this.chatRoomName =  item[1]+"さん:"+item[2];
+                    this.chatRoomName =  item[1]+":"+item[2];
                     const uid = sessionStorage.getItem('user');
                     if (this.onSnapshot.indexOf(ID)==-1){
                         this.chatHist[ID]=[];
@@ -641,28 +642,36 @@
             `<div id="have">
                 <h2>持っている教科書</h2>
                 <ul>
-                    <li v-for="(book) in books">{{book}}</li>
+                    <li v-for="(book) in books">
+                        <i class="las la-book-open"></i>    
+                        {{book.title}}
+                        <i class="las la-user-edit"></i>
+                        {{book.author}}
+                        {{book.cnt}}
+                    </li>
                 </ul>
             </div>
             `,
             data(){
                 return{
-                    books:[]
+                    books:{}
                 }
             },
             mounted(){
                 loginCheck(firebase).then(item=>{
                     if(item){
                         const uid = sessionStorage.getItem('user');
-                        db.collection('bookInfo')
-                        .where('uid','==',uid)
+                        db.collection('users')
+                        .doc(uid)
+                        .collection('books')
                         .onSnapshot((snapshot)=>{
                             snapshot.docChanges().forEach((change) => {
-                                
-                                if(this.books.indexOf(change.doc.id)==-1){
-                                    this.books.unshift(change.doc.id);
-                                }else{
-                                    this.books.splice(this.books.indexOf(change.doc.id),1);
+                                if(Object.keys(this.books).indexOf(change.doc.id)==-1){
+                                    this.$set(this.books,change.doc.id,{   
+                                        title:change.doc.data().bname, 
+                                        author:change.doc.data().bauth
+                                    })
+                                    
                                 }
                                                             
                             });

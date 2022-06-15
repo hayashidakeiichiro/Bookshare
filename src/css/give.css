@@ -73,10 +73,17 @@ body {font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; 
 #barcode-wrapper{
     margin-top: 40px;
     visibility: hidden; 
+    z-index: 11;
+}
+
+#barcode-wrapper .las{
+    display: none;
+    transition: all 0.5s;
 }
 #barcode-wrapper p{
     text-align: center;
 }
+
 #barcode-view{
     display: block;
     margin: 0 auto;
@@ -107,15 +114,22 @@ body {font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; 
 
 /* listing */
 .listing{
-    
     padding: 30px;
 }
+
+
 .listing textarea{
     width: 70%;
     font-size: 15px;
 }
 
-
+@keyframes barcode_arrow{
+    0% {left: 0;}
+    50% {left:95%; rotate: 0deg;}
+    50.01% {left:95%; rotate: 180deg;}
+    99.99% {left:0; rotate: 180deg; opacity: 100;}
+    100% {opacity: 0;}
+}
 @media (min-width:800px){
     #main{
         display: flex;
@@ -126,6 +140,18 @@ body {font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; 
         bottom: 0;
         margin: 20px;
     }
+    #barcode-wrapper div{
+        position: relative;
+    }
+    #barcode-wrapper:hover .las{
+        position: absolute;
+        top: -25px;
+        display: block;
+        font-size: 1.4em;
+        color: #1a93fd;
+        animation: barcode_arrow 2.5s forwards;
+    }
+ 
     #give-form{
         margin-top: 50px;
         width: 50%;      

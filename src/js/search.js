@@ -33,18 +33,16 @@ new Vue({
             console.log(book);
             socket.emit("booksearch",book,author)
         },
-        select: async function(e){
-            e.preventDefault();
-            console.log(e.target.value);
-            console.log(this.books);
-            const isbn = await this.books[e.target.value][0]; 
+        select: async function(book){
+            // e.preventDefault();
+            const isbn = await book[0]; 
             if (this.selectedBookIndex==isbn){
                 this.selectedBookIndex=""
             } else{
                 this.selectedBookIndex=isbn;
             }                
-            const bname = await this.books[e.target.value][1];                  
-            const bauth = await this.books[e.target.value][2]; 
+            const bname = await book[1];                  
+            const bauth = await book[2]; 
             this.selectedBook = [isbn, bname, bauth];
             loginCheck(firebase).then(async (item)=>{
                 if(item){

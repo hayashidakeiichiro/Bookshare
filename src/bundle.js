@@ -3,7 +3,6 @@ import header from './vue/header.vue';
 import Navigation from './vue/Navigation.vue';
 import {loginCheck} from './js/functions.js';
 
-
 const db=firebase.firestore();
 const app = createApp({
   data(){
@@ -17,6 +16,14 @@ const app = createApp({
   components: {
     'Navigation': Navigation,
     'header-tag': header
+  },
+  methods:{
+    pointMinus:function(){
+      this.point=this.point-100
+    },
+    pointplus:function(){
+      this.point=this.point+75
+    }
   },
   created(){
     const vm = this;

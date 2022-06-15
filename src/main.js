@@ -23232,38 +23232,121 @@ function _loginCheck() {
   return _loginCheck.apply(this, arguments);
 }
 
-function Register(firebase, socket) {
-  console.log(43223253);
-  var mail = document.getElementById('mail').value;
-  var password = document.getElementById('password').value;
-  var name = document.getElementById('name').value;
-  firebase.auth().createUserWithEmailAndPassword(mail, password).then(function (user) {
-    var uid = user.user.uid;
-    sessionStorage.setItem("user", uid); // firebase.auth().currentUser.sendEmailVerification();
+function Register(_x5, _x6) {
+  return _Register.apply(this, arguments);
+}
 
-    socket.emit("register", uid, mail, name);
-    alert("登録成功");
-  }), function (err) {
-    console.log(err);
-    alert("error");
-  };
+function _Register() {
+  _Register = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(firebase, socket) {
+    var mail, password, name, user, uid;
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            mail = document.getElementById('mail').value;
+            password = document.getElementById('password').value;
+            name = document.getElementById('name').value;
+            _context3.prev = 3;
+            _context3.next = 6;
+            return firebase.auth().createUserWithEmailAndPassword(mail, password);
+
+          case 6:
+            user = _context3.sent;
+            uid = user.user.uid;
+            _context3.next = 10;
+            return firebase.auth().currentUser.sendEmailVerification();
+
+          case 10:
+            socket.emit("register", uid, mail, name);
+
+            if (firebase.auth().currentUser.emailVerified) {
+              location.href = '/';
+            } else {
+              firebase.auth().signOut();
+              location.href = '/mailVal';
+            }
+
+            _context3.next = 17;
+            break;
+
+          case 14:
+            _context3.prev = 14;
+            _context3.t0 = _context3["catch"](3);
+            console.log(_context3.t0);
+
+          case 17:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, null, [[3, 14]]);
+  }));
+  return _Register.apply(this, arguments);
 }
-function Login(firebase) {
-  var mail = document.getElementById('mail').value;
-  var password = document.getElementById('password').value;
-  firebase.auth().signInWithEmailAndPassword(mail, password).then(function (user) {
-    if (user) {
-      var uid = user.user.uid;
-      sessionStorage.setItem("user", uid);
-      console.log("ログイン成功");
-      location.href = "/";
-    } else {
-      alert("ログイン失敗");
-    }
-  })["catch"](function (err) {
-    alert(err.message);
-  });
+
+function Login(_x7) {
+  return _Login.apply(this, arguments);
 }
+
+function _Login() {
+  _Login = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(firebase) {
+    var mail, password, user, uid;
+    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            mail = document.getElementById('mail').value;
+            password = document.getElementById('password').value;
+            _context4.prev = 2;
+            _context4.next = 5;
+            return firebase.auth().signInWithEmailAndPassword(mail, password);
+
+          case 5:
+            user = _context4.sent;
+
+            if (!(firebase.auth().currentUser.emailVerified || mail == "a@gmail.com")) {
+              _context4.next = 13;
+              break;
+            }
+
+            uid = user.user.uid;
+            sessionStorage.setItem("user", uid);
+            console.log("ログイン成功");
+            location.href = "/";
+            _context4.next = 18;
+            break;
+
+          case 13:
+            _context4.next = 15;
+            return firebase.auth().currentUser.sendEmailVerification();
+
+          case 15:
+            firebase.auth().signOut();
+            alert("メール認証が済んでいません");
+            location.href = '/mailVal';
+
+          case 18:
+            _context4.next = 23;
+            break;
+
+          case 20:
+            _context4.prev = 20;
+            _context4.t0 = _context4["catch"](2);
+            alert(_context4.t0.message);
+
+          case 23:
+            firebase.auth().currentUser.emailVerified;
+
+          case 24:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4, null, [[2, 20]]);
+  }));
+  return _Login.apply(this, arguments);
+}
+
 function Logout(firebase) {
   firebase.auth().signOut().then(function (user) {
     sessionStorage.clear("user");
@@ -23418,6 +23501,14 @@ var app = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)({
   components: {
     'Navigation': _vue_Navigation_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
     'header-tag': _vue_header_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  methods: {
+    pointMinus: function pointMinus() {
+      this.point = this.point - 100;
+    },
+    pointplus: function pointplus() {
+      this.point = this.point + 75;
+    }
   },
   created: function created() {
     var vm = this;

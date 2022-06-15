@@ -32,8 +32,12 @@
         <header-tag :login="login" :name="name" :point="point"></header-tag>
         <Navigation page="give" :alerton="alerton"></Navigation>     
     </div>
+
     <div id="barcode-wrapper" class="view-off">
-        <p id="message">カメラ初期化中です</p>
+        <p id="message"></p>
+        <div>
+            <i class="las la-angle-double-right"></i>
+        </div>
         <canvas id="barcode-view"></canvas>
     </div>
     <div id="main">
@@ -67,18 +71,19 @@
             <img src="/img/ISBN1.png" alt="">
         </div>
         <div class="listing" v-else>
+            <h3>出品フォーム</h3>
             <div class="result"  v-cloak>
                 <div class="book-info title">
                     <i class="las la-book-open"></i>
-                    {{result.title}}
+                    <p>{{result.title}}</p>
                 </div>
                 <div class="book-info author">
                     <i class="las la-user-edit"></i>
-                    {{result.author}}
+                    <p>{{result.author}}</p>
                 </div>
                 <div class="book-info publisherName">
                     <i class="las la-building"></i>
-                    {{result.publisherName}}
+                    <p>{{result.publisherName}}</p>
                 </div>
             </div>
             <h5>受け渡し場所</h5>
@@ -127,9 +132,13 @@
                         if(item){
                         const uid=sessionStorage.getItem('user');
                         
-                        if (this.isbn!="" ){
-                            socket.emit("bookgive", uid,this.isbn,this.result.title,this.result.author,this.region,this.detail);
-                            alert("出品が完了されました");
+                        if (this.isbn!=""){
+                            if (window.confirm("「"+this.result.title+"」"+"　を出品しますか？")){
+                                socket.emit("bookgive", uid,this.isbn,this.result.title,this.result.author,this.region,this.detail);
+                                alert("「"+this.result.title+"」"+"　を出品しました");
+                                this.isbn="";
+                                this.result={title:"",author:"",publisherName:""};
+                            }
                         }else{
                             alert("ISBNと書名を入力してください")
                         }
@@ -148,9 +157,8 @@
                         var vm = this;
                         const request = new XMLHttpRequest();
                         const author = encodeURI('鈴木たろう')
-                        // const isbn = "9784297102111";
                         const testurl = `https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?applicationId=1007321329061508161&isbn=${this.isbn}`
-                        
+                        let no_bookData=true;
                         request.open('GET', testurl, true); 
                         request.onload = function() {
                             const jsonInfo = JSON.parse(this.responseText);
@@ -159,23 +167,32 @@
                                 vm.$set(vm.result,"title",jsonInfo.Items[0].Item.title);
                                 vm.$set(vm.result,"author",jsonInfo.Items[0].Item.author );
                                 vm.$set(vm.result,"publisherName",jsonInfo.Items[0].Item.publisherName );
+                                no_bookData=false;
                                 // socket.emit("bookgive", uid, vm.isbn, jsonInfo.Items[0].Item.title, jsonInfo.Items[0].Item.author);
                             }else{
                                 console.log('nodata')
                             }
                         };
                         request.send()
-
-                        // const request2 = new XMLHttpRequest();
-                        // const testurl2 = `https://shopping.yahooapis.jp/ShoppingWebService/V3/itemSearch?appid=dj00aiZpPWtRSXp0S29pYXNZOSZzPWNvbnN1bWVyc2VjcmV0Jng9NzU-&jan_code=${this.isbn}`
-                        
-                        // request2.open('GET', testurl2, true); 
-                        // request2.onload = function() {
-                        //     const jsonInfo = JSON.parse(this.responseText);
-                        //     console.log(jsonInfo.hits[0].name.split('/'))
+                        if (no_bookData){
+                            const request2 = new XMLHttpRequest();
+                            const testurl2 = `https://www.googleapis.com/books/v1/volumes?q=isbn:${this.isbn}`
                             
-                        // };
-                        // request2.send()
+                            request2.open('GET', testurl2, true); 
+                            request2.onload = function() {
+                                const jsonInfo = JSON.parse(this.responseText);
+                                if(jsonInfo.items[0]){
+                                    console.log(jsonInfo.items[0]); //レスポンスに含まれるテキストを返す
+                                    vm.$set(vm.result,"title",jsonInfo.items[0].volumeInfo.title);
+                                    vm.$set(vm.result,"author",jsonInfo.items[0].volumeInfo.authors[0] )
+                                    no_bookData=false;
+                                }else{
+                                    console.log('nodata')
+                                }
+                                
+                            };
+                            request2.send()
+                        }
 
                     }else{
                         this.result={title:"",author:"",publisherName:""}

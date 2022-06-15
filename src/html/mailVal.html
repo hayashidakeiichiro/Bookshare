@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <link rel="stylesheet" href="/css/login.css">
+    <title>mail_varification</title>
+</head>
+<body>
+    <h1>認証メールを送りました</h1>
+    <div class="text">
+        認証を完了してログインし直してください
+        <button onclick="location.href='/'">ホームへ戻る</button>
+        <button onclick="location.href='/login'">ログイン</button>
+    </div>
+   
+</body>
+</html>

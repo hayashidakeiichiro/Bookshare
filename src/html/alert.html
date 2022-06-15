@@ -36,10 +36,15 @@
     <div id="alert-container">
         <ul v-if="alertList.length!=0">
             <li v-for="alert in alertList">
-                {{alert}}
+                <span class="alertTime">
+                    {{alert[1].getMonth()}}/{{alert[1].getDate()}}
+                    {{alert[1].getHours().toString().padStart(2,'0')}}:{{alert[1].getMinutes().toString().padStart(2,'0')}}
+                </span>
+                　　{{alert[0]}}
             </li>
         </ul>
         <p v-else>お知らせはありません</p>
+       
     </div>
 
     <script type="module">
@@ -55,6 +60,7 @@
                 }
             },
             methods:{
+              
             },
             created(){
                 const vm = this;
@@ -63,8 +69,7 @@
                     if (item){
                         db.collection('users').doc(uid).collection('alert').get().then((snapshot)=>{
                             snapshot.forEach((doc)=>{
-                                vm.alertList.push(doc.data().msg)
-                                // vm.alertList.push(Date(doc.data().time))
+                                vm.alertList.push([doc.data().msg, new Date(doc.data().time)])
                             })
                         })
                     }

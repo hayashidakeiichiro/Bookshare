@@ -40,9 +40,12 @@
 
 #Mypage-container .bookname{
     position: absolute;
-    font-size: 20px;
+    font-size: 15px;
     left: 0;
     line-height: 40px;
+}
+#Mypage-container .bookname .las{
+    font-size: 1.2em;  
 }
 
 #Mypage-container .btn{
@@ -180,6 +183,7 @@
     background-color: transparent;
     margin-bottom: 30px;
     padding-bottom: 11px;
+    padding-top: 20px;
 }
 
 #Mypage-container .leave-chat{

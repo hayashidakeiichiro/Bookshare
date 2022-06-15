@@ -1,5 +1,5 @@
 //スキャナの表示非表示切り替え
-const warpper = document.getElementById("barcode-wrapper");
+const wrapper = document.getElementById("barcode-wrapper");
 let blnCameraInit = false;//カメラ初期化が正常終了したかどうか
 
 //生の映像　ページには表示しない
@@ -83,12 +83,13 @@ const message = document.getElementById("message");
 
 
 //スキャンのインターバル(ミリ秒)
-const INTERVAL = 200;
+const INTERVAL = 160;
 
 //コードのエラーチェック回数
 const VALIDATION = 3;
 let validationCnt = 0;
 let validationCode = "";
+
 
 // スキャンされた回数　-1の時スキャンしない
 let scanningCnt = -1; 
@@ -106,13 +107,13 @@ function initBarcodeScaner() {
     function(stream){
         video.srcObject = stream;
         blnCameraInit = true;
-        message.innerHTML="スキャンしてください";
+        message.innerHTML="";
         
         }
     ).then(()=>{
 
-        warpper.classList.remove("view-off");
-        warpper.classList.add("view-on");
+        wrapper.classList.remove("view-off");
+        wrapper.classList.add("view-on");
         setTimeout(scanStart,2000)
     })
     .catch(
@@ -136,11 +137,11 @@ function scanStart() {
     //setIntervalだと処理の遅延のかかわらず実行してしまうので都度再帰する。
     scanningCnt = 0;
 
-    warpper.style.visibility="visible";
+    wrapper.style.visibility="visible";
 
     if (blnCameraInit==false) {
         reserveEnd = setTimeout(() => {
-            warpper.style.visibility="hidden";
+            wrapper.style.visibility="hidden";
         }, 3000);
     } else {
         setTimeout(scanning,0);
@@ -281,7 +282,7 @@ function initParam() {
 }
 
 function toggleScan() {
-    if(warpper.style.visibility=="visible") {
+    if(wrapper.style.visibility=="visible") {
         scanEnd();
     } else {
         scanStart();
@@ -337,10 +338,25 @@ function scanEnd() {
     }
     scanningCnt=-1;
     video.pause();
-    warpper.style.visibility="hidden";
+    wrapper.style.visibility="hidden";
     validationCnt = 0;
     validationCode="";
 }
 
-//エントリーポイント
+//画面の移動
 
+function draggable(target) {
+    target.onmousedown = function() {
+      document.onmousemove = mouseMove;
+    };
+    document.onmouseup = function() {
+      document.onmousemove = null;
+    };
+    function mouseMove(e) {
+      var event = e ? e : window.event;
+      target.style.top = (event.clientY-140) + 'px';
+      target.style.left = (event.clientX-170) + 'px';
+    }
+  }
+
+  draggable(wrapper);

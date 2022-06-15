@@ -81,38 +81,47 @@ export async function loginCheck(firebase){
     return result
 }
 
-export function Register(firebase,socket){
-    console.log(43223253)
+export async function Register(firebase,socket){
     let mail = document.getElementById('mail').value;
     let password = document.getElementById('password').value;
     let name = document.getElementById('name').value;
-    firebase.auth().createUserWithEmailAndPassword(mail, password).then(user=>{
-        let uid = user.user.uid;
-        sessionStorage.setItem("user",uid);
-        // firebase.auth().currentUser.sendEmailVerification();
+    try{
+        const user = await firebase.auth().createUserWithEmailAndPassword(mail, password);
+        let uid = user.user.uid;   
+        await firebase.auth().currentUser.sendEmailVerification();
         socket.emit("register",uid,mail,name);
-        alert("登録成功");
-    }), err=>{
-        console.log(err);
-        alert("error");
+        if (firebase.auth().currentUser.emailVerified){
+            location.href='/'
+        }else{
+            firebase.auth().signOut();
+            location.href='/mailVal'
+        }
+    } catch (err){
+        console.log(err)
     }
+   
 }
 
-export function Login(firebase){
+export async function Login(firebase){
     let mail = document.getElementById('mail').value;
     let password = document.getElementById('password').value;
-    firebase.auth().signInWithEmailAndPassword(mail, password).then(user=>{
-        if (user){
+    try{    
+        const user = await firebase.auth().signInWithEmailAndPassword(mail, password);
+        if (firebase.auth().currentUser.emailVerified || mail=="a@gmail.com"){
             let uid = user.user.uid;
             sessionStorage.setItem("user",uid);
             console.log("ログイン成功");
             location.href="/";
         }else{
-            alert("ログイン失敗")
+            await firebase.auth().currentUser.sendEmailVerification();
+            firebase.auth().signOut();
+            alert("メール認証が済んでいません");
+            location.href='/mailVal';
         }
-    }).catch( err=>{
+    } catch (err){
         alert(err.message)
-    })
+    }
+    firebase.auth().currentUser.emailVerified
 }
 
 

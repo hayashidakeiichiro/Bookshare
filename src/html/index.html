@@ -43,7 +43,7 @@
       </div>
       <div id="book-container">
         <ul id="booklist" v-if="!modal">
-          <li v-for="(book, bindex) in books" :value="bindex" @click="select" v-cloak :class="{'selected':book[0]==selectedBookIndex}">
+          <li v-for="(book, bindex) in books"  @click="select(book)" v-cloak :class="{'selected':book[0]==selectedBookIndex}">
             <i class="las la-book-open"></i>
             {{book[1]}}
             <i class="las la-user-edit"></i>

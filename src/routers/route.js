@@ -26,6 +26,9 @@ router.get('/login', (req,res) => {
 router.get('/register', (req,res) => {
     res.sendFile(path.join(__dirname, '/../../html/register.html'))
   })
+router.get('/mailVal', (req,res) => {
+    res.sendFile(path.join(__dirname, '/../../html/mailVal.html'))
+  })
 router.get('/alert', (req,res) => {
     res.sendFile(path.join(__dirname, '/../../html/alert.html'))
   })
